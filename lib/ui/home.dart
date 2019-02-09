@@ -3,6 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 
+const String SERVICE_UUID = "19b10000-e8f2-537e-4f6c-d104768a1214";
+const String CHARACTERISTIC_UUID = "19b10001-e8f2-537e-4f6c-d104768a1214";
+const String DEVICE_NAME = "Wobbly";
+
 class Home extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();
@@ -11,11 +15,18 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   FlutterBlue _flutterBlue = FlutterBlue.instance;
 
+  // State
   BluetoothState _bluetoothState = BluetoothState.unknown;
   StreamSubscription _stateSubscription;
 
-  StreamSubscription _scanResults;
-  Map<DeviceIdentifier, ScanResult> scanResults = new Map();
+  // Scanning
+  StreamSubscription _scanSubscription;
+  bool _isScanning = false;
+
+  // Device
+  BluetoothDevice wobbly;
+  bool get isConnected => (wobbly != null);
+
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +48,7 @@ class _HomeState extends State<Home> {
                 ),
               ),
               RaisedButton(
-                child: Text("Scan"),
+                child: Text("Connect"),
                 onPressed: _bluetoothState != BluetoothState.on ? null : _scan,
               )
             ],
@@ -71,10 +82,17 @@ class _HomeState extends State<Home> {
       child: ListTile(
           title: Text(
             getInfoTileString(),
-            style: Theme.of(context).primaryTextTheme.subhead,
+            style: Theme
+                .of(context)
+                .primaryTextTheme
+                .subhead,
           ),
           trailing: Icon(Icons.info,
-              color: Theme.of(context).primaryTextTheme.subhead.color)),
+              color: Theme
+                  .of(context)
+                  .primaryTextTheme
+                  .subhead
+                  .color)),
     );
   }
 
@@ -87,10 +105,36 @@ class _HomeState extends State<Home> {
   }
 
   String getInfoTileString() {
-    return "Bluetooth is ${_bluetoothState.toString().substring(15).toUpperCase()}";
+    return "Bluetooth is ${_bluetoothState.toString()
+        .substring(15)
+        .toUpperCase()}";
   }
 
   void _scan() {
-    
+    _scanSubscription = _flutterBlue
+        .scan(
+      timeout: const Duration(seconds: 5),
+      withServices: [
+          Guid(SERVICE_UUID)
+        ]
+    )
+        .listen((scanResult) {
+      if(scanResult.device.name == DEVICE_NAME) {
+        wobbly = scanResult.device;
+      }
+    }, onDone: _stopScan);
+
+    setState(() {
+      _isScanning = true;
+    });
+  }
+
+  _stopScan() {
+    _scanSubscription?.cancel();
+    _scanSubscription = null;
+    setState(() {
+      _isScanning = false;
+    });
+
   }
 }
