@@ -1,16 +1,14 @@
 import 'dart:async';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
+import 'package:wobble_board/utils/ble_utils.dart';
 
-
-const String DEBUG_KEY = "DEBUGDEBUGDEBUGDEBUGDEBUG_";
-
-const int SCAN_CONNECT_TIMEOUT = 6;
-const String CHAR_UUID = "19b10001-e8f2-537e-4f6c-d104768a1214";
-const String SERVICE_UUID = "19b10000-e8f2-537e-4f6c-d104768a1214";
-const String DEVICE_NAME = "Wobbly";
+const List<String> status = [
+  "Turn your bluetooth on.",
+  "Connect to your Wobbly device.",
+  "Connected."
+];
 
 class Home extends StatefulWidget {
   @override
@@ -18,168 +16,128 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  FlutterBlue _flutterBlue = FlutterBlue.instance;
+  //BLE
+  static FlutterBlue _bleManager = FlutterBlue.instance;
+  BleConnectionUtils _bleUtils = BleConnectionUtils(_bleManager);
+  BluetoothState _bluetoothCurrentState = BluetoothState.unknown;
+  StreamSubscription _bluetoothStateSubscription;
 
-  ByteData _buffer;
-  Uint8List _midBuff;
+  //Wobbly
+  BluetoothDeviceState _wobblyCurrentState;
+  StreamSubscription _wobblyStateSubscription;
+  StreamSubscription _wobblyDataStream;
 
-  // State
-  BluetoothState _bluetoothState = BluetoothState.unknown;
-  StreamSubscription _stateSubscription;
-
-  // Scanning
-  StreamSubscription _scanSubscription;
-  bool _tryingToConnect = false;
-
-  // Device
-  BluetoothDevice _wobbly;
-  StreamSubscription _deviceConnection;
-  StreamSubscription _deviceStateSubscription;
-  StreamSubscription _charValueSubscription;
-  BluetoothCharacteristic _wobblyChar;
-  BluetoothDeviceState _deviceState = BluetoothDeviceState.disconnected;
+  double _x = 0, _y = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Wobble"),
-        actions: <Widget>[],
-      ),
-      body: StreamBuilder(
-        stream: _flutterBlue.onStateChanged(),
-        builder: (BuildContext ctx, AsyncSnapshot<BluetoothState> snap) {
-          _bluetoothState = snap.data ?? _bluetoothState;
-          return Column(
-            children: <Widget>[
-              getAlertTile(),
-              Expanded(
-                child: ListView(
-                  children: <Widget>[],
-                ),
+        appBar: AppBar(
+          title: Text("Wobbly"),
+          centerTitle: true,
+        ),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            _getStatusTile(),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  RaisedButton(
+                      onPressed: _bluetoothCurrentState == BluetoothState.on
+                          ? _onButton
+                          : null,
+                      child: Text(
+                          (_wobblyCurrentState == BluetoothDeviceState.connected
+                              ? "Disconnect"
+                              : "Connect"))),
+                  Text("X: $_x / Y: $_y")
+                ],
               ),
-              RaisedButton(
-                child: Text("Connect"),
-                onPressed: _bluetoothState != BluetoothState.on
-                    ? null
-                    : _startConnectionSequence,
-              )
-            ],
-          );
-        },
-      ),
-    );
+            )
+          ],
+        ));
   }
 
   @override
   void dispose() {
-    _stateSubscription?.cancel();
-    _stateSubscription = null;
+    _bluetoothStateSubscription?.cancel();
+    _wobblyStateSubscription?.cancel();
+    _wobblyDataStream?.cancel();
+    _bleUtils.onDispose();
     super.dispose();
-  }
-
-  Widget getAlertTile() {
-    return Container(
-      color: getInfoTileColor(),
-      child: ListTile(
-          title: Text(
-            getInfoTileString(),
-            style: Theme.of(context).primaryTextTheme.subhead,
-          ),
-          trailing: Icon(Icons.info,
-              color: Theme.of(context).primaryTextTheme.subhead.color)),
-    );
-  }
-
-  Color getInfoTileColor() {
-    if (_bluetoothState == BluetoothState.off) {
-      return Colors.red[400];
-    } else {
-      return Colors.blue[400];
-    }
-  }
-
-  String getInfoTileString() {
-    return "Bluetooth is ${_bluetoothState.toString().substring(15).toUpperCase()}";
   }
 
   @override
   void initState() {
     super.initState();
-    _flutterBlue.state.then((s) {
-      setState(() => _bluetoothState = s);
+    _bleUtils.onInitState();
+    _bleManager.state.then((state) {
+      setState(() {
+        _bluetoothCurrentState = state;
+      });
     });
-    _stateSubscription = _flutterBlue.onStateChanged().listen((s) {
-      setState(() => _bluetoothState = s);
+    _bluetoothStateSubscription = _bleManager.onStateChanged().listen((state) {
+      setState(() {
+        _bluetoothCurrentState = state;
+      });
     });
   }
 
   void _connect() {
-    print("$DEBUG_KEY _connect");
-    if (_wobbly != null) {
-      _deviceConnection = _flutterBlue
-          .connect(_wobbly, timeout: Duration(seconds: SCAN_CONNECT_TIMEOUT))
-          .listen(null, onDone: _disconnect);
+    _bleUtils.discoverWobbly().then((res) {
+      if (res) {
+        _wobblyStateSubscription = _bleUtils.connectToWobbly().listen((state) {
+          setState(() {
+            _wobblyCurrentState = state;
+          });
+          if (state == BluetoothDeviceState.connected) {
+            _bleUtils.getWobblyData().then((stream) {
+              _wobblyDataStream = stream.listen((data) {
+                setState(() {
+                  _x = data[AccAxis.X];
+                  _y = data[AccAxis.Y];
+                });
+              });
+            });
+          }
+        }, onDone: _disconnect);
+      }
+    });
+  }
 
-      // Subscribe to connection changes
-      _deviceStateSubscription = _wobbly.onStateChanged().listen((s) {
-        _deviceState = s;
-        if (s == BluetoothDeviceState.connected) {
-          _discoverServices();
-        }
-      });
+  void _disconnect() {
+    _wobblyDataStream?.cancel();
+    _wobblyDataStream = null;
+    _wobblyStateSubscription?.cancel();
+    _wobblyStateSubscription = null;
+    _bleUtils.onDisconnect();
+    setState(() {
+      _wobblyCurrentState = BluetoothDeviceState.disconnected;
+      _x = 0;
+      _y = 0;
+    });
+  }
+
+  ListTile _getStatusTile() {
+    String txt;
+    if (_bluetoothCurrentState == BluetoothState.on) {
+      txt = _wobblyCurrentState == BluetoothDeviceState.connected
+          ? status[2]
+          : status[1];
+    } else {
+      txt = status[0];
     }
+    return ListTile(
+      title: Text(txt),
+      trailing: Icon(Icons.info),
+    );
   }
 
-  void _decodeBuffer(List<int> valueList) {
-    print(valueList);
-    _midBuff = Uint8List.fromList(valueList);
-    _buffer = _midBuff.buffer.asByteData();
-    print(
-        "X: ${_buffer.getFloat32(1, Endian.little)}; Y: ${_buffer.getFloat32(5, Endian.little)}");
-  }
-
-  _disconnect() {
-    print("$DEBUG_KEY _disconnect");
-    _charValueSubscription?.cancel();
-    _charValueSubscription = null;
-    _deviceStateSubscription?.cancel();
-    _deviceStateSubscription = null;
-    _deviceConnection = null;
-    _deviceConnection?.cancel();
-  }
-
-  void _discoverServices() async {
-    print("$DEBUG_KEY _discoverServices/1");
-    _wobblyChar = (await _wobbly.discoverServices())
-        .firstWhere((s) {
-          return s.uuid.toString() == SERVICE_UUID;
-        })
-        .characteristics
-        .firstWhere((ch) {
-          return ch.uuid.toString() == CHAR_UUID;
-        });
-
-    print("$DEBUG_KEY _discoverServices/2");
-    await _wobbly.readCharacteristic(_wobblyChar).then((v) {
-      _decodeBuffer(v);
-    });
-    print("$DEBUG_KEY _discoverServices/3");
-    await _wobbly.setNotifyValue(_wobblyChar, true);
-    print("$DEBUG_KEY _discoverServices/4");
-    _charValueSubscription = _wobbly.onValueChanged(_wobblyChar).listen((v) {
-      _decodeBuffer(v);
-    });
-  }
-
-  void _startConnectionSequence() async {
-    print("$DEBUG_KEY _startConnectionSequence");
-    _wobbly = (await _flutterBlue.scan(
-            timeout: const Duration(seconds: SCAN_CONNECT_TIMEOUT),
-            withServices: [Guid(SERVICE_UUID)]).firstWhere((scanR) {
-      return scanR.device.name == DEVICE_NAME;
-    }))
-        .device;
-    _connect();
+  void _onButton() {
+    _wobblyCurrentState == BluetoothDeviceState.connected
+        ? _disconnect()
+        : _connect();
   }
 }
