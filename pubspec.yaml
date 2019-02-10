@@ -23,6 +23,9 @@ dependencies:
   #This package provides BLE support.
   flutter_blue: ^0.4.2
 
+  #accelerometer events
+  sensors: ^0.4.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -69,3 +72,5 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.io/custom-fonts/#from-packages
+  assets:
+    - assets/exercises.json
