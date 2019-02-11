@@ -1,24 +1,26 @@
-{
-  "exercises": [
-    {
-      "steps": [
-        {
-          "goal": -3,
-          "axis": "y"
-        },
-        {
-          "goal": -3,
-          "axis": "x"
-        },
-        {
-          "goal": 3,
-          "axis": "y"
-        },
-        {
-          "goal": 3,
-          "axis": "x"
-        }
-      ]
-    }
-  ]
-}
+[
+  {
+    "steps": [
+      {
+        "goal": -3,
+        "axis": "y",
+        "time": 1000
+      },
+      {
+        "goal": -3,
+        "axis": "x",
+        "time": 1000
+      },
+      {
+        "goal": 3,
+        "axis": "y",
+        "time": 1000
+      },
+      {
+        "goal": 3,
+        "axis": "x",
+        "time": 1000
+      }
+    ]
+  }
+]

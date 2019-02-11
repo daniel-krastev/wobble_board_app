@@ -13,6 +13,7 @@ class Exercise extends StatefulWidget {
 class _ExerciseState extends State<Exercise> {
   var exercises;
   int currentEx = 0;
+  var stopwatch = new Stopwatch();
 
   List<double> _accelerometerValues;
   List<StreamSubscription<dynamic>> _streamSubscriptions =
@@ -76,24 +77,38 @@ class _ExerciseState extends State<Exercise> {
   void checkIfComplete() {
     var axisValue;
     var currentGoal;
+    var timeToHold;
 
-    if(exercises != null && exercises is Map) {
-      if(exercises['exercises'][0]['steps'][currentEx]['axis'] == 'x') {
+    if(exercises != null) {
+      // check which axis value to monitor
+      if(exercises[0]['steps'][currentEx]['axis'] == 'x') {
         axisValue = _accelerometerValues[0];
       }
       else {
         axisValue = _accelerometerValues[1];
       }
 
-      currentGoal = exercises['exercises'][0]['steps'][currentEx]['goal'];
+      currentGoal = exercises[0]['steps'][currentEx]['goal'];
+      timeToHold = exercises[0]['steps'][currentEx]['time'];
 
       if((currentGoal < 0 && axisValue <= currentGoal) || (currentGoal > 0 && axisValue >= currentGoal)) {
-        if(currentEx == exercises['exercises'][0]['steps'].length - 1) {
-          currentEx = 0;
+        // start the stopwatch
+        stopwatch.start();
+
+        // if time elapsed is longer than the required time to hold
+        // exercise has been completed
+        if(stopwatch.elapsedMilliseconds >= timeToHold) {
+          if(currentEx == exercises[0]['steps'].length - 1) {
+            currentEx = 0;
+          }
+          else {
+            currentEx++;
+          }
         }
-        else {
-          currentEx++;
-        }
+      }
+      // if the accelerometer value is no longer within range then reset the stopwatch
+      else {
+        stopwatch.reset();
       }
     }
   }
