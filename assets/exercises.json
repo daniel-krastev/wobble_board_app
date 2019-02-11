@@ -1,25 +1,43 @@
 [
   {
+    "name": "Movement exercise",
+    "type": "movement",
     "steps": [
       {
         "goal": -3,
         "axis": "y",
-        "time": 1000
+        "time": 1000,
+        "text": "Hold the board forward for 1 sec"
       },
       {
         "goal": -3,
         "axis": "x",
-        "time": 1000
+        "time": 1000,
+        "text": "Hold the board right for 1 sec"
       },
       {
         "goal": 3,
         "axis": "y",
-        "time": 1000
+        "time": 1000,
+        "text": "Hold the board backward for 1 sec"
       },
       {
         "goal": 3,
         "axis": "x",
-        "time": 1000
+        "time": 1000,
+        "text": "Hold the board left for 1 sec"
+      }
+    ]
+  },
+  {
+    "name": "Balance Exercise",
+    "type": "balance",
+    "steps": [
+      {
+        "goal": 0.3,
+        "axis": "xy",
+        "time": 3000,
+        "text": "Balance the board for 3 seconds"
       }
     ]
   }
