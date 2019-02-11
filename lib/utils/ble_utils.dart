@@ -10,12 +10,19 @@ const int SCAN_CONNECT_TIMEOUT = 6;
 enum AccAxis { X, Y }
 
 class BleConnectionUtils {
+  static final BleConnectionUtils _instance = BleConnectionUtils._internal();
+  static BleConnectionUtils get instance => _instance;
+
+  BleConnectionUtils._internal() {
+    _flutterBlue = FlutterBlue.instance;
+  }
+
   ByteData _buffer;
   FlutterBlue _flutterBlue;
   BluetoothDevice _wobbly;
   BluetoothCharacteristic _wobblyChar;
+  StreamSubscription _wobblyDataSubscription;
 
-  BleConnectionUtils(this._flutterBlue);
 
   Stream<BluetoothDeviceState> connectToWobbly() {
     return _flutterBlue.connect(_wobbly,
@@ -27,13 +34,21 @@ class BleConnectionUtils {
             timeout: const Duration(seconds: SCAN_CONNECT_TIMEOUT),
             withServices: [Guid(SERVICE_UUID)]).firstWhere((scanR) {
       return scanR.device.name == DEVICE_NAME;
-    }))
-        .device;
+    }, orElse: () => null))
+        ?.device;
     return _wobbly != null;
   }
 
-  Future<Stream<Map<AccAxis, double>>> getWobblyData() async {
+  Future<StreamSubscription<Map<AccAxis, double>>> getWobblyData() async {
     return await _discoverServicesAndChars();
+  }
+
+   Stream<BluetoothState> getBleStateStream() {
+    return _flutterBlue.onStateChanged();
+  }
+
+  Future<BluetoothState> getBleCurrentState() {
+    return _flutterBlue.state;
   }
 
   void onDisconnect() {
@@ -48,7 +63,10 @@ class BleConnectionUtils {
     _wobbly = null;
   }
 
-  Future<Stream<Map<AccAxis, double>>> _discoverServicesAndChars() async {
+  Future<StreamSubscription<Map<AccAxis, double>>> _discoverServicesAndChars() async {
+    if(_wobblyDataSubscription != null) {
+      return _wobblyDataSubscription;
+    }
     _wobblyChar = (await _wobbly.discoverServices())
         .firstWhere((s) {
           return s.uuid.toString() == SERVICE_UUID;
@@ -59,8 +77,8 @@ class BleConnectionUtils {
         });
 
     await _wobbly.setNotifyValue(_wobblyChar, true);
-
-    return _getXyStream(_wobbly.onValueChanged(_wobblyChar));
+    _wobblyDataSubscription = _getXyStream(_wobbly.onValueChanged(_wobblyChar)).listen(null);
+    return _wobblyDataSubscription;
   }
 
   Stream<Map<AccAxis, double>> _getXyStream(Stream<List<int>> source) async* {
