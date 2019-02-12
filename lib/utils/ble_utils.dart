@@ -55,7 +55,9 @@ class BleConnectionUtils {
     _disconnect();
   }
 
-  void onDispose() {}
+  void onDispose() {
+
+  }
 
   void onInitState() {}
 

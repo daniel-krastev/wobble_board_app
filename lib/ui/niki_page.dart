@@ -60,7 +60,7 @@ class _NikiState extends State<Niki> {
   @override
   void dispose() {
     print("DEBUGDEBUGDEBUGDEBUGDEBUG:         NIKI_DISPOSE");
-    bl?.dispose();
+//    bl?.dispose();
     super.dispose();
   }
 

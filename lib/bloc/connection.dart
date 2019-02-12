@@ -23,6 +23,7 @@ class ConnectionBlock {
       _connectionEventController.sink;
 
   ConnectionBlock() {
+    print("DEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUG:        CONNECT_BLOC_CONSTRUCTING");
     _connectionEventController.stream.listen(_mapEventToState);
     _bluetoothStateSubscription = _bleUtils.getBleStateStream().listen((s) {
       _bluetoothLastKnownState = s;
@@ -79,6 +80,7 @@ class ConnectionBlock {
   }
 
   void dispose() {
+    print("DEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUG:        CONNECT_BLOC_DESPOSING");
     _connectionStateController.close();
     _connectionEventController.close();
     _wobblyStateSubscription?.cancel();

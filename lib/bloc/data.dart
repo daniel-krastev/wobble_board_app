@@ -19,6 +19,7 @@ class DataBlock {
 
   DataBlock() {
     _dataEventController.stream.listen(_mapEventToState);
+    print("DEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUG:        DATA_BLOCK_CONSTRUCTOR");
   }
 
   void _mapEventToState(DataEvent event) {
@@ -33,15 +34,16 @@ class DataBlock {
 
       }
     } else if (event is DropDataStream) {
-//      _wobblyDataSubscription.pause();
-//      _wobblyDataSubscription?.cancel();
-//      _wobblyDataSubscription = null;
+      _wobblyDataSubscription.pause();
+      _wobblyDataSubscription?.cancel();
+      _wobblyDataSubscription = null;
     }
   }
 
   void dispose() {
+    print("DEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUG:        DATA_BLOC_DISPOSING");
     _dataController.close();
-//    _dataEventController.close();
+    _dataEventController.close();
     _wobblyDataSubscription?.cancel();
     _wobblyDataSubscription = null;
   }
