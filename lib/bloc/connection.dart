@@ -5,28 +5,33 @@ import 'package:wobble_board/utils/ble_utils.dart';
 import 'package:wobble_board/utils/wobbly_data.dart';
 
 class ConnectionBlock {
-  //BLE
+  //BLE helper class
   BleConnectionUtils _bleUtils = BleConnectionUtils.instance;
+
+  //Bluetooth state
   StreamSubscription _bluetoothStateSubscription;
   BluetoothState _bluetoothLastKnownState = BluetoothState.unknown;
 
-  //Wobbly
+  //Wobbly State
   StreamSubscription _wobblyStateSubscription;
   BluetoothDeviceState _wobblyLastKnownState =
       BluetoothDeviceState.disconnected;
 
+  //Standard BLoC stream fields
+  //Sink: this, Stream: Connection UI
   final _connectionStateController = StreamController<String>();
   StreamSink<String> get _inConnState => _connectionStateController.sink;
   Stream<String> get connection => _connectionStateController.stream;
 
+  //Sink: Connection UI, Stream: this
   final _connectionEventController = StreamController<ConnectionEvent>();
   Sink<ConnectionEvent> get connectionEventSink =>
       _connectionEventController.sink;
 
   ConnectionBlock() {
-    print("$DEBUG_TAG CONNECT_BLOC_CONSTRUCTING");
     _connectionEventController.stream.listen(_mapEventToState);
-    _bluetoothStateSubscription = _bleUtils.getBleStateStream().listen((s) {
+    _bluetoothStateSubscription =
+        _bleUtils.getBluetoothStateStream().listen((s) {
       _bluetoothLastKnownState = s;
       _getStatus();
     });
@@ -41,43 +46,45 @@ class ConnectionBlock {
       _connect();
     } else if (event is DisconnectEvent) {
       _disconnect();
-    } else if (event is StatusEvent) {
+    } else if (event is GetStatusEvent) {
       _getStatus();
     }
   }
 
   void _getStatus() {
     if (_bluetoothLastKnownState != BluetoothState.on) {
-      _inConnState.add(ConnState.BLE_OFF);
+      _inConnState.add(ConnectionState.BLE_OFF);
     } else if (_wobblyLastKnownState == BluetoothDeviceState.connected) {
-      _inConnState.add(ConnState.DEVICE_CONNECTED);
+      _inConnState.add(ConnectionState.DEVICE_CONNECTED);
     } else {
-      _inConnState.add(ConnState.DEVICE_DISCONNECTED);
+      _inConnState.add(ConnectionState.DEVICE_DISCONNECTED);
     }
   }
 
   void _connect() {
-      _bleUtils.discoverWobbly().then((res) {
-        if (res) {
-          _wobblyStateSubscription =
-              _bleUtils.connectToWobbly().listen((state) {
-            _wobblyLastKnownState = state;
-            if (state == BluetoothDeviceState.connected || state == BluetoothDeviceState.connecting) {
-              _inConnState.add(ConnState.DEVICE_CONNECTED);
-            } else {
-              _inConnState.add(ConnState.DEVICE_DISCONNECTED);
-            }
-          }, onDone: _disconnect);
-        } else {
-          _inConnState.add(ConnState.DEVICE_NOT_FOUND);
-        }
-      });
+    _bleUtils.discoverWobbly().then((res) {
+      if (res) {
+        _wobblyStateSubscription = _bleUtils.connectToWobbly().listen((state) {
+          if (state == BluetoothDeviceState.connected) {
+            _bleUtils.discoverWobblyChar().then((res) {
+              if(res) {
+                _inConnState.add(ConnectionState.DEVICE_CONNECTED);
+              }
+            });
+          } else {
+            _inConnState.add(ConnectionState.DEVICE_DISCONNECTED);
+          }
+          _wobblyLastKnownState = state;
+        }, onDone: _disconnect);
+      } else {
+        _inConnState.add(ConnectionState.DEVICE_NOT_FOUND);
+      }
+    });
   }
 
   void _disconnect() {
     _wobblyStateSubscription?.cancel();
-    _bleUtils.onDisconnect();
-    _inConnState.add(ConnState.DEVICE_DISCONNECTED);
+    _inConnState.add(ConnectionState.DEVICE_DISCONNECTED);
   }
 
   void dispose() {
@@ -86,8 +93,7 @@ class ConnectionBlock {
     _connectionEventController.close();
     _wobblyStateSubscription?.cancel();
     _bluetoothStateSubscription?.cancel();
-    _bleUtils.onDispose();
-    _inConnState.add(ConnState.DEVICE_DISCONNECTED);
+    _inConnState.add(ConnectionState.DEVICE_DISCONNECTED);
   }
 }
 
@@ -97,11 +103,12 @@ class ConnectEvent extends ConnectionEvent {}
 
 class DisconnectEvent extends ConnectionEvent {}
 
-class StatusEvent extends ConnectionEvent {}
+class GetStatusEvent extends ConnectionEvent {}
 
-class ConnState {
-  static const BLE_OFF = "Turn your bluetooth on.";
-  static const DEVICE_CONNECTED = "Connected.";
-  static const DEVICE_NOT_FOUND = "Device not found.";
-  static const DEVICE_DISCONNECTED = "Disconnected.";
+class ConnectionState {
+  static const BLE_OFF = "Turn your bluetooth on";
+  static const DEVICE_CONNECTED = "Connected";
+  static const DEVICE_CONNECTING = "Connecting...";
+  static const DEVICE_NOT_FOUND = "Device not found";
+  static const DEVICE_DISCONNECTED = "Disconnected";
 }

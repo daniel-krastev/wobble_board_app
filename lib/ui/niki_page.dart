@@ -19,9 +19,7 @@ class _NikiState extends State<Niki> {
   @override
   Widget build(BuildContext context) {
     print("$DEBUG_TAG NIKI_BUILD");
-    //TODO implement start and stop stream functions (notify true and false)
-    //starts the stream
-    bl.dataEventSink.add(bloc.GetDataStream());
+    bl.dataEventSink.add(bloc.ContinueDataEvent());
     return StreamBuilder(
         initialData: {
           AccAxis.X: 0.0,
@@ -41,6 +39,20 @@ class _NikiState extends State<Niki> {
                 children: <Widget>[
                   Text("X: ${snapshot.data[AccAxis.X]}"),
                   Text("Y: ${snapshot.data[AccAxis.Y]}"),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      RaisedButton(
+                          onPressed: () => bl.dataEventSink.add(bloc.StartDataEvent()),
+                          child: Text("Start")),
+                      Padding(
+                        padding: EdgeInsets.all(10.0),
+                      ),
+                      RaisedButton(
+                          onPressed: () => bl.dataEventSink.add(bloc.StopDataEvent()),
+                          child: Text("Stop")),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -56,7 +68,7 @@ class _NikiState extends State<Niki> {
   @override
   void dispose() {
     print("$DEBUG_TAG NIKI_DISPOSE");
-    //TODO other dispose version, that doesn't close the stream, just sets the notify to false
+    bl.dataEventSink.add(bloc.LeaveUiEvent());
     super.dispose();
   }
 

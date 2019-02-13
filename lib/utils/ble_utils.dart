@@ -5,7 +5,7 @@ import 'package:flutter_blue/flutter_blue.dart';
 
 import 'wobbly_data.dart';
 
-const int SCAN_CONNECT_TIMEOUT = 6;
+const int SCAN_CONNECT_TIMEOUT = 4;
 
 enum AccAxis { X, Y }
 
@@ -21,29 +21,8 @@ class BleConnectionUtils {
   FlutterBlue _flutterBlue;
   BluetoothDevice _wobbly;
   BluetoothCharacteristic _wobblyChar;
-  StreamSubscription _wobblyDataSubscription;
 
-
-  Stream<BluetoothDeviceState> connectToWobbly() {
-    return _flutterBlue.connect(_wobbly,
-        timeout: Duration(seconds: SCAN_CONNECT_TIMEOUT));
-  }
-
-  Future<bool> discoverWobbly() async {
-    _wobbly = (await _flutterBlue.scan(
-            timeout: const Duration(seconds: SCAN_CONNECT_TIMEOUT),
-            withServices: [Guid(SERVICE_UUID)]).firstWhere((scanR) {
-      return scanR.device.name == DEVICE_NAME;
-    }, orElse: () => null))
-        ?.device;
-    return _wobbly != null;
-  }
-
-  Future<StreamSubscription<Map<AccAxis, double>>> getWobblyData() async {
-    return await _discoverServicesAndChars();
-  }
-
-   Stream<BluetoothState> getBleStateStream() {
+  Stream<BluetoothState> getBluetoothStateStream() {
     return _flutterBlue.onStateChanged();
   }
 
@@ -51,36 +30,39 @@ class BleConnectionUtils {
     return _flutterBlue.state;
   }
 
-  void onDisconnect() {
-    _disconnect();
+  Future<bool> discoverWobbly() async {
+    _wobbly = (await _flutterBlue.scan(
+        timeout: const Duration(seconds: SCAN_CONNECT_TIMEOUT),
+        withServices: [Guid(SERVICE_UUID)]).firstWhere((scanR) {
+      return scanR.device.name == DEVICE_NAME;
+    }, orElse: () => null))
+        ?.device;
+    return _wobbly != null;
   }
 
-  void onDispose() {
-
+  Stream<BluetoothDeviceState> connectToWobbly() {
+    return _flutterBlue.connect(_wobbly,
+        timeout: Duration(seconds: SCAN_CONNECT_TIMEOUT));
   }
 
-  void onInitState() {}
-
-  void _disconnect() {
-    _wobbly = null;
-  }
-
-  Future<StreamSubscription<Map<AccAxis, double>>> _discoverServicesAndChars() async {
-    if(_wobblyDataSubscription != null) {
-      return _wobblyDataSubscription;
-    }
+  Future<bool> discoverWobblyChar() async {
     _wobblyChar = (await _wobbly.discoverServices())
         .firstWhere((s) {
-          return s.uuid.toString() == SERVICE_UUID;
-        })
-        .characteristics
-        .firstWhere((ch) {
-          return ch.uuid.toString() == CHAR_UUID;
-        });
+    return s.uuid.toString() == SERVICE_UUID;
+    }, orElse: null)?.characteristics
+        ?.firstWhere((ch) {
+    return ch.uuid.toString() == CHAR_UUID;
+    }, orElse: null);
+    return _wobblyChar != null;
+  }
 
+  Future<Stream<Map<AccAxis, double>>> notifyAndGetStream() async {
     await _wobbly.setNotifyValue(_wobblyChar, true);
-    _wobblyDataSubscription = _getXyStream(_wobbly.onValueChanged(_wobblyChar)).listen(null);
-    return _wobblyDataSubscription;
+    return _getXyStream(_wobbly.onValueChanged(_wobblyChar));
+  }
+
+  Future<bool> stopNotifications() async {
+    return _wobbly.setNotifyValue(_wobblyChar, false);
   }
 
   Stream<Map<AccAxis, double>> _getXyStream(Stream<List<int>> source) async* {

@@ -31,7 +31,7 @@ class _HomeState extends State<Home> {
                 title: Text("Wobbly"),
                 centerTitle: true,
               ),
-              floatingActionButton: state == bloc.ConnState.DEVICE_CONNECTED ? _getNextScreenButton() : Container(),
+              floatingActionButton: state == bloc.ConnectionState.DEVICE_CONNECTED ? _getNextScreenButton() : Container(),
               body: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
@@ -41,7 +41,7 @@ class _HomeState extends State<Home> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         RaisedButton(
-                            onPressed: (state == bloc.ConnState.DEVICE_DISCONNECTED || state == bloc.ConnState.DEVICE_NOT_FOUND)
+                            onPressed: (state == bloc.ConnectionState.DEVICE_DISCONNECTED || state == bloc.ConnectionState.DEVICE_NOT_FOUND)
                                 ? () => bl.connectionEventSink
                                 .add(bloc.ConnectEvent())
                                 : null,
@@ -50,7 +50,7 @@ class _HomeState extends State<Home> {
                           padding: EdgeInsets.all(10.0),
                         ),
                         RaisedButton(
-                            onPressed: state == bloc.ConnState.DEVICE_CONNECTED
+                            onPressed: state == bloc.ConnectionState.DEVICE_CONNECTED
                                 ? () => bl.connectionEventSink
                                 .add(bloc.DisconnectEvent())
                                 : null,

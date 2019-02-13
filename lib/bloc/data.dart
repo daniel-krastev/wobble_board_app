@@ -4,54 +4,72 @@ import 'package:wobble_board/utils/ble_utils.dart';
 import 'package:wobble_board/utils/wobbly_data.dart';
 
 class DataBlock {
-  //BLE
+  //BLE helper class
   BleConnectionUtils _bleUtils = BleConnectionUtils.instance;
 
-  //Wobbly
+  //Wobbly data
   StreamSubscription _wobblyDataSubscription;
 
+  //Keeps the last streaming state before leaving the exercise page
+  bool _streamingToUI;
+
+  //Standard BLoC stream fields
+  //Sink: this, Stream: Exercise UI (x & y data)
   final _dataController = StreamController<Map<AccAxis, double>>.broadcast();
   StreamSink<Map<AccAxis, double>> get _inData => _dataController.sink;
   Stream<Map<AccAxis, double>> get data => _dataController.stream;
 
+  //Sink: Exercise UI, Stream: this
   final _dataEventController = StreamController<DataEvent>();
   Sink<DataEvent> get dataEventSink =>
       _dataEventController.sink;
 
   DataBlock() {
+    _streamingToUI = false;
     _dataEventController.stream.listen(_mapEventToState);
-    print("$DEBUG_TAG DATA_BLOCK_CONSTRUCTOR");
   }
 
   void _mapEventToState(DataEvent event) {
-    if (event is GetDataStream) {
+    if (event is StartDataEvent) {
       if(_wobblyDataSubscription == null) {
-        _bleUtils.getWobblyData().then((s) {
-          _wobblyDataSubscription = s;
-          _wobblyDataSubscription.onData((s) {
-            _inData.add(s);
+        _bleUtils.notifyAndGetStream().then((stream) {
+          _wobblyDataSubscription = stream.listen((xY) {
+            _inData.add(xY);
           });
         });
-
       }
-    } else if (event is DropDataStream) {
-      _wobblyDataSubscription.pause();
-      _wobblyDataSubscription?.cancel();
-      _wobblyDataSubscription = null;
+    } else if (event is StopDataEvent) {
+      _stopNotifications();
+    } else if (event is ContinueDataEvent) {
+      if(_streamingToUI) {
+        _mapEventToState(StartDataEvent());
+      }
+    } else if (event is LeaveUiEvent) {
+      _streamingToUI = _wobblyDataSubscription != null;
+      _stopNotifications();
     }
   }
 
+  void _stopNotifications() {
+    _bleUtils.stopNotifications().then((r) {
+      _wobblyDataSubscription?.cancel();
+      _wobblyDataSubscription = null;
+    });
+  }
+
   void dispose() {
-    print("$DEBUG_TAG DATA_BLOC_DISPOSING");
     _dataController.close();
     _dataEventController.close();
     _wobblyDataSubscription?.cancel();
-    _wobblyDataSubscription = null;
   }
 }
 
 abstract class DataEvent {}
 
-class GetDataStream extends DataEvent {}
+class StartDataEvent extends DataEvent {}
 
-class DropDataStream extends DataEvent {}
+class StopDataEvent extends DataEvent {}
+
+class ContinueDataEvent extends DataEvent {}
+
+class LeaveUiEvent extends DataEvent {}
