@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:wobble_board/utils/ble_utils.dart';
+import 'package:wobble_board/utils/wobbly_data.dart';
 
 class DataBlock {
   //BLE
@@ -19,7 +20,7 @@ class DataBlock {
 
   DataBlock() {
     _dataEventController.stream.listen(_mapEventToState);
-    print("DEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUG:        DATA_BLOCK_CONSTRUCTOR");
+    print("$DEBUG_TAG DATA_BLOCK_CONSTRUCTOR");
   }
 
   void _mapEventToState(DataEvent event) {
@@ -41,7 +42,7 @@ class DataBlock {
   }
 
   void dispose() {
-    print("DEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUG:        DATA_BLOC_DISPOSING");
+    print("$DEBUG_TAG DATA_BLOC_DISPOSING");
     _dataController.close();
     _dataEventController.close();
     _wobblyDataSubscription?.cancel();

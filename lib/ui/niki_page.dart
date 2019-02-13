@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:wobble_board/bloc/bloc_provider.dart';
 import 'package:wobble_board/bloc/data.dart' as bloc;
 import 'package:wobble_board/utils/ble_utils.dart';
+import 'package:wobble_board/utils/wobbly_data.dart';
 
 class Niki extends StatefulWidget {
   @override
@@ -12,13 +13,15 @@ class _NikiState extends State<Niki> {
   bloc.DataBlock bl;
 
   _NikiState() {
-    print("DEBUGDEBUGDEBUGDEBUGDEBUG:         NIKI_CONSTRUCT");
+    print("$DEBUG_TAG NIKI_CONSTRUCT");
   }
 
   @override
   Widget build(BuildContext context) {
-    print("DEBUGDEBUGDEBUGDEBUGDEBUG:         NIKI_BUILD");
-    bl = BlocProvider.of(context).dataBloc;
+    print("$DEBUG_TAG NIKI_BUILD");
+    //TODO implement start and stop stream functions (notify true and false)
+    //starts the stream
+    bl.dataEventSink.add(bloc.GetDataStream());
     return StreamBuilder(
         initialData: {
           AccAxis.X: 0.0,
@@ -26,7 +29,7 @@ class _NikiState extends State<Niki> {
         },
         stream: bl.data,
         builder: (context, snapshot) {
-          print(snapshot.data);
+          print("$DEBUG_TAG ${snapshot.data}");
           return Scaffold(
             appBar: AppBar(
               title: Text("Exercise Page"),
@@ -46,28 +49,27 @@ class _NikiState extends State<Niki> {
   }
 
   void initState() {
-    print("DEBUGDEBUGDEBUGDEBUGDEBUG:         NIKI_INIT_STATE");
+    print("$DEBUG_TAG NIKI_INIT_STATE");
     super.initState();
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => _postCallback(context));
-  }
-
-  void _postCallback(BuildContext c) {
-    print("DEBUGDEBUGDEBUGDEBUGDEBUG:         NIKI_POST_CALLBACK");
-    BlocProvider.of(context).dataBloc.dataEventSink.add(bloc.GetDataStream());
   }
 
   @override
   void dispose() {
-    print("DEBUGDEBUGDEBUGDEBUGDEBUG:         NIKI_DISPOSE");
-//    bl?.dispose();
+    print("$DEBUG_TAG NIKI_DISPOSE");
+    //TODO other dispose version, that doesn't close the stream, just sets the notify to false
     super.dispose();
   }
 
   @override
-  void didUpdateWidget(Niki oldWidget) {
-    print("DEBUGDEBUGDEBUGDEBUGDEBUG:         NIKI_DID_UPDATE_WIDGET");
+  void didChangeDependencies() {
+    print("$DEBUG_TAG NIKI_DID_CHANGE_DEPENDENCIES");
+    bl = BlocProvider.of(context).dataBloc;
+    super.didChangeDependencies();
   }
 
-
+  @override
+  void didUpdateWidget(Niki oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    print("$DEBUG_TAG NIKI_DID_UPDATE_WIDGET");
+  }
 }

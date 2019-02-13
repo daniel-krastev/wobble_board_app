@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:wobble_board/bloc/bloc_provider.dart';
 import 'package:wobble_board/bloc/connection.dart' as bloc;
 import 'package:wobble_board/ui/niki_page.dart';
+import 'package:wobble_board/utils/wobbly_data.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -13,18 +14,18 @@ class _HomeState extends State<Home> {
 
 
   _HomeState() {
-    print("DEBUGDEBUGDEBUGDEBUGDEBUG:         HOME_CONSTRUCT");
+    print("$DEBUG_TAG HOME_CONSTRUCT");
   }
 
   @override
   Widget build(BuildContext context) {
-    print("DEBUGDEBUGDEBUGDEBUGDEBUG:         HOME_BUILD");
-    bl = BlocProvider.of(context).connectionBloc;
+    print("$DEBUG_TAG HOME_BUILD");
     return StreamBuilder(
           initialData: "",
           stream: bl.connection,
           builder: (context, snapshot) {
             final String state = snapshot.data ?? "";
+            print("$DEBUG_TAG $state");
             return Scaffold(
               appBar: AppBar(
                 title: Text("Wobbly"),
@@ -78,27 +79,28 @@ class _HomeState extends State<Home> {
 
   @override
   void dispose() {
-    print("DEBUGDEBUGDEBUGDEBUGDEBUG:         HOME_DISPOSE");
+    print("$DEBUG_TAG HOME_DISPOSE");
     bl?.dispose();
+    BlocProvider.of(context).dataBloc?.dispose();
     super.dispose();
   }
 
   void initState() {
-    print("DEBUGDEBUGDEBUGDEBUGDEBUG:         HOME_INIT_STATE");
+    print("$DEBUG_TAG HOME_INIT_STATE");
     super.initState();
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => _postCallback(context));
   }
 
-  void _postCallback(BuildContext c) {
-    print("DEBUGDEBUGDEBUGDEBUGDEBUG:         HOME_POST_CALLBACK");
-    BlocProvider.of(context).connectionBloc.connectionEventSink.add(bloc.StatusEvent());
+  @override
+  void didChangeDependencies() {
+    print("$DEBUG_TAG HOME_DID_CHANGE_DEPENDENCIES");
+    bl = BlocProvider.of(context).connectionBloc;
+    super.didChangeDependencies();
   }
-
 
   @override
   void didUpdateWidget(Home oldWidget) {
-    print("DEBUGDEBUGDEBUGDEBUGDEBUG:         HOME_DID_UPDATE_WIDGET");
+    super.didUpdateWidget(oldWidget);
+    print("$DEBUG_TAG HOME_DID_UPDATE_WIDGET");
   }
 
   ListTile _getStatusTile(final String status) {
