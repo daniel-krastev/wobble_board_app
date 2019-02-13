@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:wobble_board/bloc/bloc_provider.dart';
 import 'package:wobble_board/bloc/data.dart' as bloc;
@@ -10,6 +11,8 @@ class Niki extends StatefulWidget {
 
 class _NikiState extends State<Niki> {
   bloc.DataBlock bl;
+  List<double> _accelerometerValues = [0.00, 0.00];
+  List<StreamSubscription<dynamic>> _streamSubscriptions = <StreamSubscription<dynamic>>[];
 
   _NikiState() {
     print("DEBUGDEBUGDEBUGDEBUGDEBUG:         NIKI_CONSTRUCT");
@@ -19,37 +22,29 @@ class _NikiState extends State<Niki> {
   Widget build(BuildContext context) {
     print("DEBUGDEBUGDEBUGDEBUGDEBUG:         NIKI_BUILD");
     bl = BlocProvider.of(context).dataBloc;
-    return StreamBuilder(
-        initialData: {
-          AccAxis.X: 0.0,
-          AccAxis.Y: 0.0
-        },
-        stream: bl.data,
-        builder: (context, snapshot) {
-          print(snapshot.data);
-          return Scaffold(
-            appBar: AppBar(
-              title: Text("Exercise Page"),
-              centerTitle: true,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Exercise Page"),
+        centerTitle: true,
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text("X: ${_accelerometerValues[0]}"),
+            Text("Y: ${_accelerometerValues[1]}"),
+            RaisedButton(
+                onPressed: _startListening,
+                child: Text("Start")
             ),
-            body: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text("X: ${snapshot.data[AccAxis.X]}"),
-                  Text("Y: ${snapshot.data[AccAxis.Y]}"),
-                ],
-              ),
+            RaisedButton(
+                onPressed: _stopListening,
+                child: Text("Stop")
             ),
-          );
-        });
-  }
-
-  void initState() {
-    print("DEBUGDEBUGDEBUGDEBUGDEBUG:         NIKI_INIT_STATE");
-    super.initState();
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => _postCallback(context));
+          ],
+        ),
+      ),
+    );
   }
 
   void _postCallback(BuildContext c) {
@@ -57,11 +52,20 @@ class _NikiState extends State<Niki> {
     BlocProvider.of(context).dataBloc.dataEventSink.add(bloc.GetDataStream());
   }
 
-  @override
-  void dispose() {
-    print("DEBUGDEBUGDEBUGDEBUGDEBUG:         NIKI_DISPOSE");
-//    bl?.dispose();
-    super.dispose();
+  void _startListening() {
+    _streamSubscriptions
+        .add(bl.data.listen((event) {
+          debugPrint('$event');
+          _accelerometerValues = <double>[event[AccAxis.X], event[AccAxis.Y]];
+          debugPrint('${_accelerometerValues[0]}');
+        })
+    );
+  }
+
+  void _stopListening() {
+    for (StreamSubscription<dynamic> subscription in _streamSubscriptions) {
+      subscription.cancel();
+    }
   }
 
   @override
@@ -69,5 +73,20 @@ class _NikiState extends State<Niki> {
     print("DEBUGDEBUGDEBUGDEBUGDEBUG:         NIKI_DID_UPDATE_WIDGET");
   }
 
+  @override
+  void dispose() {
+    print("DEBUGDEBUGDEBUGDEBUGDEBUG:         NIKI_DISPOSE");
+    super.dispose();
+    for (StreamSubscription<dynamic> subscription in _streamSubscriptions) {
+      subscription.cancel();
+    }
+  }
 
+  @override
+  void initState() {
+    print("DEBUGDEBUGDEBUGDEBUGDEBUG:         NIKI_INIT_STATE");
+    super.initState();
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => _postCallback(context));
+  }
 }
