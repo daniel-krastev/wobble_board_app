@@ -5,7 +5,7 @@ import 'package:flutter_blue/flutter_blue.dart';
 
 import 'wobbly_data.dart';
 
-const int SCAN_CONNECT_TIMEOUT = 4;
+const int SCAN_CONNECT_TIMEOUT = 16;
 
 enum AccAxis { X, Y }
 
@@ -32,8 +32,8 @@ class BleConnectionUtils {
 
   Future<bool> discoverWobbly() async {
     _wobbly = (await _flutterBlue.scan(
-        timeout: const Duration(seconds: SCAN_CONNECT_TIMEOUT),
-        withServices: [Guid(SERVICE_UUID)]).firstWhere((scanR) {
+            timeout: const Duration(seconds: SCAN_CONNECT_TIMEOUT),
+            withServices: [Guid(SERVICE_UUID)]).firstWhere((scanR) {
       return scanR.device.name == DEVICE_NAME;
     }, orElse: () => null))
         ?.device;
@@ -42,17 +42,18 @@ class BleConnectionUtils {
 
   Stream<BluetoothDeviceState> connectToWobbly() {
     return _flutterBlue.connect(_wobbly,
-        timeout: Duration(seconds: SCAN_CONNECT_TIMEOUT));
+        timeout: Duration(seconds: SCAN_CONNECT_TIMEOUT), autoConnect: false);
   }
 
   Future<bool> discoverWobblyChar() async {
     _wobblyChar = (await _wobbly.discoverServices())
         .firstWhere((s) {
-    return s.uuid.toString() == SERVICE_UUID;
-    }, orElse: null)?.characteristics
+          return s.uuid.toString() == SERVICE_UUID;
+        }, orElse: null)
+        ?.characteristics
         ?.firstWhere((ch) {
-    return ch.uuid.toString() == CHAR_UUID;
-    }, orElse: null);
+          return ch.uuid.toString() == CHAR_UUID;
+        }, orElse: null);
     return _wobblyChar != null;
   }
 

@@ -12,13 +12,10 @@ class Niki extends StatefulWidget {
 class _NikiState extends State<Niki> {
   bloc.DataBlock bl;
 
-  _NikiState() {
-    print("$DEBUG_TAG NIKI_CONSTRUCT");
-  }
+  _NikiState();
 
   @override
   Widget build(BuildContext context) {
-    print("$DEBUG_TAG NIKI_BUILD");
     bl.dataEventSink.add(bloc.ContinueDataEvent());
     return StreamBuilder(
         initialData: {
@@ -60,28 +57,15 @@ class _NikiState extends State<Niki> {
         });
   }
 
-  void initState() {
-    print("$DEBUG_TAG NIKI_INIT_STATE");
-    super.initState();
-  }
-
   @override
   void dispose() {
-    print("$DEBUG_TAG NIKI_DISPOSE");
     bl.dataEventSink.add(bloc.LeaveUiEvent());
     super.dispose();
   }
 
   @override
   void didChangeDependencies() {
-    print("$DEBUG_TAG NIKI_DID_CHANGE_DEPENDENCIES");
     bl = BlocProvider.of(context).dataBloc;
     super.didChangeDependencies();
-  }
-
-  @override
-  void didUpdateWidget(Niki oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    print("$DEBUG_TAG NIKI_DID_UPDATE_WIDGET");
   }
 }

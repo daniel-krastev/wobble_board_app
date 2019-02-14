@@ -13,19 +13,15 @@ class _HomeState extends State<Home> {
   bloc.ConnectionBlock bl;
 
 
-  _HomeState() {
-    print("$DEBUG_TAG HOME_CONSTRUCT");
-  }
+  _HomeState();
 
   @override
   Widget build(BuildContext context) {
-    print("$DEBUG_TAG HOME_BUILD");
     return StreamBuilder(
           initialData: "",
           stream: bl.connection,
           builder: (context, snapshot) {
             final String state = snapshot.data ?? "";
-            print("$DEBUG_TAG $state");
             return Scaffold(
               appBar: AppBar(
                 title: Text("Wobbly"),
@@ -79,28 +75,15 @@ class _HomeState extends State<Home> {
 
   @override
   void dispose() {
-    print("$DEBUG_TAG HOME_DISPOSE");
     bl?.dispose();
     BlocProvider.of(context).dataBloc?.dispose();
     super.dispose();
   }
 
-  void initState() {
-    print("$DEBUG_TAG HOME_INIT_STATE");
-    super.initState();
-  }
-
   @override
   void didChangeDependencies() {
-    print("$DEBUG_TAG HOME_DID_CHANGE_DEPENDENCIES");
     bl = BlocProvider.of(context).connectionBloc;
     super.didChangeDependencies();
-  }
-
-  @override
-  void didUpdateWidget(Home oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    print("$DEBUG_TAG HOME_DID_UPDATE_WIDGET");
   }
 
   ListTile _getStatusTile(final String status) {

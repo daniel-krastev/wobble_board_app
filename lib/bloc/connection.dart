@@ -5,6 +5,8 @@ import 'package:wobble_board/utils/ble_utils.dart';
 import 'package:wobble_board/utils/wobbly_data.dart';
 
 class ConnectionBlock {
+  static const int CONNECTION_RETRIES = 4;
+
   //BLE helper class
   BleConnectionUtils _bleUtils = BleConnectionUtils.instance;
 
@@ -13,7 +15,7 @@ class ConnectionBlock {
   BluetoothState _bluetoothLastKnownState = BluetoothState.unknown;
 
   //Wobbly State
-  StreamSubscription _wobblyStateSubscription;
+  StreamSubscription _wobblyConnectionSubscription;
   BluetoothDeviceState _wobblyLastKnownState =
       BluetoothDeviceState.disconnected;
 
@@ -31,19 +33,13 @@ class ConnectionBlock {
   ConnectionBlock() {
     _connectionEventController.stream.listen(_mapEventToState);
     _bluetoothStateSubscription =
-        _bleUtils.getBluetoothStateStream().listen((s) {
-      _bluetoothLastKnownState = s;
-      _getStatus();
-    });
-    _bleUtils.getBleCurrentState().then((s) {
-      _bluetoothLastKnownState = s;
-      _getStatus();
-    });
+        _bleUtils.getBluetoothStateStream().listen(_handleBluetoothState);
+    _bleUtils.getBleCurrentState().then(_handleBluetoothState);
   }
 
   void _mapEventToState(ConnectionEvent event) {
     if (event is ConnectEvent) {
-      _connect();
+      _connect(CONNECTION_RETRIES);
     } else if (event is DisconnectEvent) {
       _disconnect();
     } else if (event is GetStatusEvent) {
@@ -61,18 +57,21 @@ class ConnectionBlock {
     }
   }
 
-  void _connect() {
-    _bleUtils.discoverWobbly().then((res) {
+  void _connect(final int retry) {
+    _bleUtils.discoverWobbly().then((res) async {
       if (res) {
-        _wobblyStateSubscription = _bleUtils.connectToWobbly().listen((state) {
+        _wobblyConnectionSubscription =
+            _bleUtils.connectToWobbly().listen((state) {
           if (state == BluetoothDeviceState.connected) {
             _bleUtils.discoverWobblyChar().then((res) {
-              if(res) {
+              if (res) {
                 _inConnState.add(ConnectionState.DEVICE_CONNECTED);
               }
             });
           } else {
-            _inConnState.add(ConnectionState.DEVICE_DISCONNECTED);
+            if (_bluetoothLastKnownState != BluetoothState.off) {
+              _inConnState.add(ConnectionState.DEVICE_DISCONNECTED);
+            }
           }
           _wobblyLastKnownState = state;
         }, onDone: _disconnect);
@@ -82,16 +81,24 @@ class ConnectionBlock {
     });
   }
 
+  void _handleBluetoothState(BluetoothState s) {
+    _bluetoothLastKnownState = s;
+    if (s == BluetoothState.off) {
+      _wobblyConnectionSubscription?.cancel();
+      _wobblyLastKnownState = BluetoothDeviceState.disconnected;
+    }
+    _getStatus();
+  }
+
   void _disconnect() {
-    _wobblyStateSubscription?.cancel();
+    _wobblyConnectionSubscription?.cancel();
     _inConnState.add(ConnectionState.DEVICE_DISCONNECTED);
   }
 
   void dispose() {
-    print("$DEBUG_TAG CONNECT_BLOC_DESPOSING");
     _connectionStateController.close();
     _connectionEventController.close();
-    _wobblyStateSubscription?.cancel();
+    _wobblyConnectionSubscription?.cancel();
     _bluetoothStateSubscription?.cancel();
     _inConnState.add(ConnectionState.DEVICE_DISCONNECTED);
   }
