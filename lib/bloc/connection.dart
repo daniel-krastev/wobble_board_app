@@ -5,8 +5,6 @@ import 'package:wobble_board/utils/ble_utils.dart';
 import 'package:wobble_board/utils/wobbly_data.dart';
 
 class ConnectionBlock {
-  static const int CONNECTION_RETRIES = 4;
-
   //BLE helper class
   BleConnectionUtils _bleUtils = BleConnectionUtils.instance;
 
@@ -39,7 +37,7 @@ class ConnectionBlock {
 
   void _mapEventToState(ConnectionEvent event) {
     if (event is ConnectEvent) {
-      _connect(CONNECTION_RETRIES);
+      _connect();
     } else if (event is DisconnectEvent) {
       _disconnect();
     } else if (event is GetStatusEvent) {
@@ -57,7 +55,7 @@ class ConnectionBlock {
     }
   }
 
-  void _connect(final int retry) {
+  void _connect() {
     _bleUtils.discoverWobbly().then((res) async {
       if (res) {
         _wobblyConnectionSubscription =

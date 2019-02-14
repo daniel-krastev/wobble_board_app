@@ -5,7 +5,7 @@ import 'package:flutter_blue/flutter_blue.dart';
 
 import 'wobbly_data.dart';
 
-const int SCAN_CONNECT_TIMEOUT = 16;
+const int SCAN_CONNECT_TIMEOUT = 18;
 
 enum AccAxis { X, Y }
 
