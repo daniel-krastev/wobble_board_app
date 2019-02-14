@@ -49,9 +49,9 @@ class ConnectionBlock {
     if (_bluetoothLastKnownState != BluetoothState.on) {
       _inConnState.add(ConnectionState.BLE_OFF);
     } else if (_wobblyLastKnownState == BluetoothDeviceState.connected) {
-      _inConnState.add(ConnectionState.DEVICE_CONNECTED);
+      _inConnState.add(ConnectionState.CONNECTED);
     } else {
-      _inConnState.add(ConnectionState.DEVICE_DISCONNECTED);
+      _inConnState.add(ConnectionState.DISCONNECTED);
     }
   }
 
@@ -63,18 +63,18 @@ class ConnectionBlock {
           if (state == BluetoothDeviceState.connected) {
             _bleUtils.discoverWobblyChar().then((res) {
               if (res) {
-                _inConnState.add(ConnectionState.DEVICE_CONNECTED);
+                _inConnState.add(ConnectionState.CONNECTED);
               }
             });
           } else {
             if (_bluetoothLastKnownState != BluetoothState.off) {
-              _inConnState.add(ConnectionState.DEVICE_DISCONNECTED);
+              _inConnState.add(ConnectionState.NOT_FOUND);
             }
           }
           _wobblyLastKnownState = state;
         }, onDone: _disconnect);
       } else {
-        _inConnState.add(ConnectionState.DEVICE_NOT_FOUND);
+        _inConnState.add(ConnectionState.NOT_FOUND);
       }
     });
   }
@@ -90,7 +90,7 @@ class ConnectionBlock {
 
   void _disconnect() {
     _wobblyConnectionSubscription?.cancel();
-    _inConnState.add(ConnectionState.DEVICE_DISCONNECTED);
+    _inConnState.add(ConnectionState.DISCONNECTED);
   }
 
   void dispose() {
@@ -98,7 +98,7 @@ class ConnectionBlock {
     _connectionEventController.close();
     _wobblyConnectionSubscription?.cancel();
     _bluetoothStateSubscription?.cancel();
-    _inConnState.add(ConnectionState.DEVICE_DISCONNECTED);
+    _inConnState.add(ConnectionState.DISCONNECTED);
   }
 }
 
@@ -112,8 +112,7 @@ class GetStatusEvent extends ConnectionEvent {}
 
 class ConnectionState {
   static const BLE_OFF = "Turn your bluetooth on";
-  static const DEVICE_CONNECTED = "Connected";
-  static const DEVICE_CONNECTING = "Connecting...";
-  static const DEVICE_NOT_FOUND = "Device not found";
-  static const DEVICE_DISCONNECTED = "Disconnected";
+  static const CONNECTED = "Connected";
+  static const NOT_FOUND = "Not found. Please, make sure Wobbly is ON.";
+  static const DISCONNECTED = "Disconnected";
 }

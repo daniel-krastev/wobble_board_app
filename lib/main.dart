@@ -7,6 +7,6 @@ import 'package:wobble_board/ui/exercise.dart';
 main() {
   final appBloc = AppBloc();
   runApp(BlocProvider(
-      bloc: appBloc, child: MaterialApp(title: "Wobble board", home: Home())));
+      bloc: appBloc, child: MaterialApp(theme: ThemeData.dark(), title: "Wobble board", home: Home())));
 }
 
