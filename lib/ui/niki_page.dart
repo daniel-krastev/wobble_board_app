@@ -13,7 +13,7 @@ class Niki extends StatefulWidget {
 class _NikiState extends State<Niki> {
   bloc.DataBlock bl;
   List<double> _accelerometerValues = [0.00, 0.00];
-  List<StreamSubscription<dynamic>> _streamSubscriptions = <StreamSubscription<dynamic>>[];
+  StreamSubscription<dynamic> _streamSubscription;
 
   _NikiState();
 
@@ -63,12 +63,19 @@ class _NikiState extends State<Niki> {
   @override
   void dispose() {
     bl.dataEventSink.add(bloc.LeaveUiEvent());
+    _streamSubscription?.cancel();
     super.dispose();
   }
 
   @override
   void didChangeDependencies() {
     bl = BlocProvider.of(context).dataBloc;
+    _streamSubscription = (bl.data.listen((event) {
+      setState(() {
+        _accelerometerValues = <double>[event[AccAxis.X], event[AccAxis.Y]];
+      });
+    })
+    );
     super.didChangeDependencies();
   }
 }
