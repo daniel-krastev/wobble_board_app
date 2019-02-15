@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:wobble_board/bloc/bloc_provider.dart';
 import 'package:wobble_board/bloc/data.dart' as bloc;
 import 'package:wobble_board/utils/ble_utils.dart';
+import 'package:wobble_board/utils/wobbly_data.dart';
 
 class Niki extends StatefulWidget {
   @override
@@ -14,79 +15,60 @@ class _NikiState extends State<Niki> {
   List<double> _accelerometerValues = [0.00, 0.00];
   List<StreamSubscription<dynamic>> _streamSubscriptions = <StreamSubscription<dynamic>>[];
 
-  _NikiState() {
-    print("DEBUGDEBUGDEBUGDEBUGDEBUG:         NIKI_CONSTRUCT");
-  }
+  _NikiState();
 
   @override
   Widget build(BuildContext context) {
-    print("DEBUGDEBUGDEBUGDEBUGDEBUG:         NIKI_BUILD");
-    bl = BlocProvider.of(context).dataBloc;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Exercise Page"),
-        centerTitle: true,
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text("X: ${_accelerometerValues[0]}"),
-            Text("Y: ${_accelerometerValues[1]}"),
-            RaisedButton(
-                onPressed: _startListening,
-                child: Text("Start")
+    bl.dataEventSink.add(bloc.ContinueDataEvent());
+    return StreamBuilder(
+        initialData: {
+          AccAxis.X: 0.0,
+          AccAxis.Y: 0.0
+        },
+        stream: bl.data,
+        builder: (context, snapshot) {
+          print("$DEBUG_TAG ${snapshot.data}");
+          return Scaffold(
+            appBar: AppBar(
+              title: Text("Exercise Page"),
+              centerTitle: true,
             ),
-            RaisedButton(
-                onPressed: _stopListening,
-                child: Text("Stop")
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text("X: ${snapshot.data[AccAxis.X]}"),
+                  Text("Y: ${snapshot.data[AccAxis.Y]}"),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      RaisedButton(
+                          onPressed: () => bl.dataEventSink.add(bloc.StartDataEvent()),
+                          child: Text("Start")),
+                      Padding(
+                        padding: EdgeInsets.all(10.0),
+                      ),
+                      RaisedButton(
+                          onPressed: () => bl.dataEventSink.add(bloc.StopDataEvent()),
+                          child: Text("Stop")),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _postCallback(BuildContext c) {
-    print("DEBUGDEBUGDEBUGDEBUGDEBUG:         NIKI_POST_CALLBACK");
-    BlocProvider.of(context).dataBloc.dataEventSink.add(bloc.GetDataStream());
-  }
-
-  void _startListening() {
-    _streamSubscriptions
-        .add(bl.data.listen((event) {
-          debugPrint('$event');
-          _accelerometerValues = <double>[event[AccAxis.X], event[AccAxis.Y]];
-          debugPrint('${_accelerometerValues[0]}');
-        })
-    );
-  }
-
-  void _stopListening() {
-    for (StreamSubscription<dynamic> subscription in _streamSubscriptions) {
-      subscription.cancel();
-    }
-  }
-
-  @override
-  void didUpdateWidget(Niki oldWidget) {
-    print("DEBUGDEBUGDEBUGDEBUGDEBUG:         NIKI_DID_UPDATE_WIDGET");
+          );
+        });
   }
 
   @override
   void dispose() {
-    print("DEBUGDEBUGDEBUGDEBUGDEBUG:         NIKI_DISPOSE");
+    bl.dataEventSink.add(bloc.LeaveUiEvent());
     super.dispose();
-    for (StreamSubscription<dynamic> subscription in _streamSubscriptions) {
-      subscription.cancel();
-    }
   }
 
   @override
-  void initState() {
-    print("DEBUGDEBUGDEBUGDEBUGDEBUG:         NIKI_INIT_STATE");
-    super.initState();
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => _postCallback(context));
+  void didChangeDependencies() {
+    bl = BlocProvider.of(context).dataBloc;
+    super.didChangeDependencies();
   }
 }
