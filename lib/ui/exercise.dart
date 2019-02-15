@@ -133,19 +133,11 @@ class _ExerciseState extends State<Exercise> {
     );
   }
 
-
-  Future<String> _loadExercisesAsset() async {
-    return await rootBundle.loadString('assets/exercises.json');
-  }
-
-  void loadExercises() async {
-    String json = await _loadExercisesAsset();
-    _parseJson(json);
-  }
-
-  void _parseJson(String jsonString) {
-    exercises = json.decode(jsonString);
-    finishedLoading = true;
+  void _loadExercises() {
+    rootBundle.loadString('assets/exercises.json').then((obj) {
+      exercises = json.decode(obj);
+      finishedLoading = true;
+    });
   }
 
   Color getColor(int rowID) {
@@ -233,7 +225,7 @@ class _ExerciseState extends State<Exercise> {
   @override
   void initState() {
     super.initState();
-    loadExercises();
+    _loadExercises();
   }
 
   @override
