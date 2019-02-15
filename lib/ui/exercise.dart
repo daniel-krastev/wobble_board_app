@@ -135,8 +135,11 @@ class _ExerciseState extends State<Exercise> {
 
   void _loadExercises() {
     rootBundle.loadString('assets/exercises.json').then((obj) {
+      print("_loadExercises");
       exercises = json.decode(obj);
-      finishedLoading = true;
+      setState(() {
+        finishedLoading = true;
+      });
     });
   }
 
