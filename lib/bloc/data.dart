@@ -15,9 +15,9 @@ class DataBlock {
 
   //Standard BLoC stream fields
   //Sink: this, Stream: Exercise UI (x & y data)
-  final _dataController = StreamController<Map<AccAxis, double>>.broadcast();
-  StreamSink<Map<AccAxis, double>> get _inData => _dataController.sink;
-  Stream<Map<AccAxis, double>> get data => _dataController.stream;
+  final _dataController = StreamController<Map<AccAxis, int>>.broadcast();
+  StreamSink<Map<AccAxis, int>> get _inData => _dataController.sink;
+  Stream<Map<AccAxis, int>> get data => _dataController.stream;
 
   //Sink: Exercise UI, Stream: this
   final _dataEventController = StreamController<DataEvent>();

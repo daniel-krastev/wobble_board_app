@@ -25,7 +25,7 @@ class _ExerciseState extends State<Exercise> {
   String _dropdownValue;
   List<String> _exerciseNames;
 
-  List<double> _accelerometerValues;
+  List<int> _accelerometerValues;
   StreamSubscription<dynamic> _streamSubscription;
 
   bloc.DataBlock bl;
@@ -243,7 +243,7 @@ class _ExerciseState extends State<Exercise> {
     bl = BlocProvider.of(context).dataBloc;
     _streamSubscription = (bl.data.listen((event) {
       setState(() {
-        _accelerometerValues = <double>[event[AccAxis.X], event[AccAxis.Y]];
+        _accelerometerValues = <int>[event[AccAxis.X], event[AccAxis.Y]];
       });
       //debugPrint('$_accelerometerValues');
       checkIfComplete();

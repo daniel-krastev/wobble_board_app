@@ -15,6 +15,7 @@ class BleConnectionUtils {
 
   BleConnectionUtils._internal() {
     _flutterBlue = FlutterBlue.instance;
+    _flutterBlue.setLogLevel(LogLevel.notice);
   }
 
   ByteData _buffer;
@@ -57,7 +58,7 @@ class BleConnectionUtils {
     return _wobblyChar != null;
   }
 
-  Future<Stream<Map<AccAxis, double>>> notifyAndGetStream() async {
+  Future<Stream<Map<AccAxis, int>>> notifyAndGetStream() async {
     await _wobbly.setNotifyValue(_wobblyChar, true);
     return _getXyStream(_wobbly.onValueChanged(_wobblyChar));
   }
@@ -66,17 +67,13 @@ class BleConnectionUtils {
     return _wobbly.setNotifyValue(_wobblyChar, false);
   }
 
-  Stream<Map<AccAxis, double>> _getXyStream(Stream<List<int>> source) async* {
+  Stream<Map<AccAxis, int>> _getXyStream(Stream<List<int>> source) async* {
     await for (var list in source) {
-      _buffer = ByteData.view(Uint8List.fromList(list).buffer);
+      _buffer = ByteData.view(Int8List.fromList(list).buffer);
       yield {
-        AccAxis.X: _normalize(_buffer.getFloat32(1, Endian.little)),
-        AccAxis.Y: _normalize(_buffer.getFloat32(5, Endian.little))
+        AccAxis.X: _buffer.getInt8(1),
+        AccAxis.Y: _buffer.getInt8(2)
       };
     }
-  }
-
-  double _normalize(double n) {
-    return double.parse(n.toStringAsFixed(2));
   }
 }

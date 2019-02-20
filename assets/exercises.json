@@ -4,25 +4,25 @@
     "type": "movement",
     "steps": [
       {
-        "goal": 0.2,
+        "goal": 5,
         "axis": "y",
         "time": 1000,
         "text": "Hold the board forward for 1 sec"
       },
       {
-        "goal": -0.2,
+        "goal": -5,
         "axis": "x",
         "time": 1000,
         "text": "Hold the board right for 1 sec"
       },
       {
-        "goal": -0.2,
+        "goal": -5,
         "axis": "y",
         "time": 1000,
         "text": "Hold the board backward for 1 sec"
       },
       {
-        "goal": 0.2,
+        "goal": 5,
         "axis": "x",
         "time": 1000,
         "text": "Hold the board left for 1 sec"
@@ -34,7 +34,7 @@
     "type": "balance",
     "steps": [
       {
-        "goal": 0.3,
+        "goal": 6,
         "axis": "xy",
         "time": 3000,
         "text": "Balance the board for 3 seconds"
