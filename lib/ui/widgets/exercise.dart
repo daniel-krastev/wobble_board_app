@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:wobble_board/bloc/bloc_provider.dart';
 import 'package:wobble_board/bloc/data.dart' as bloc;
+import 'package:wobble_board/ui/widgets/wobble_board.dart';
 import 'package:wobble_board/utils/ble_utils.dart';
 
 class Exercise extends StatefulWidget {
@@ -29,7 +30,7 @@ class _ExerciseState extends State<Exercise> {
   String _dropdownValue;
   List<String> _exerciseNames;
 
-  List<int> _accelerometerValues;
+  List<int> _accelerometerValues = [0, 0];
   StreamSubscription<dynamic> _streamSubscription;
 
   bloc.DataBlock bl;
@@ -84,17 +85,19 @@ class _ExerciseState extends State<Exercise> {
                     ),
                   ],
                 ),
-                Icon(Icons.keyboard_arrow_up, size: 50, color: getColor(0)),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Icon(Icons.keyboard_arrow_left,
-                        size: 50, color: getColor(3)),
-                    Icon(Icons.keyboard_arrow_right,
-                        size: 50, color: getColor(1)),
-                  ],
-                ),
-                Icon(Icons.keyboard_arrow_down, size: 50, color: getColor(2)),
+                WobbleBoard(
+                    x: _accelerometerValues[1], y: _accelerometerValues[0]),
+//                Icon(Icons.keyboard_arrow_up, size: 50, color: getColor(0)),
+//                Row(
+//                  mainAxisAlignment: MainAxisAlignment.center,
+//                  children: <Widget>[
+//                    Icon(Icons.keyboard_arrow_left,
+//                        size: 50, color: getColor(3)),
+//                    Icon(Icons.keyboard_arrow_right,
+//                        size: 50, color: getColor(1)),
+//                  ],
+//                ),
+//                Icon(Icons.keyboard_arrow_down, size: 50, color: getColor(2)),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
