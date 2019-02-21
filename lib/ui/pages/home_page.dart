@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wobble_board/bloc/bloc_provider.dart';
 import 'package:wobble_board/bloc/connection.dart' as bloc;
-import 'package:wobble_board/ui/landing_page.dart';
+import 'package:wobble_board/ui/pages/landing_page.dart';
 
 class Home extends StatefulWidget {
   @override

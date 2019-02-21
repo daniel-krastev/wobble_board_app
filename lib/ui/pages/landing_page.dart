@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:wobble_board/ui/exercise_page.dart';
-import 'package:wobble_board/ui/game_page.dart';
+import 'package:wobble_board/ui/pages/exercise_page.dart';
+import 'package:wobble_board/ui/pages/game_page.dart';
 
 class Landing extends StatelessWidget {
   @override

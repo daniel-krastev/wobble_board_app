@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wobble_board/ui/exercise.dart';
+import 'package:wobble_board/ui/widgets/exercise.dart';
 
 class ExercisePage extends StatelessWidget {
   @override
