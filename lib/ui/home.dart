@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wobble_board/bloc/bloc_provider.dart';
 import 'package:wobble_board/bloc/connection.dart' as bloc;
-import 'package:wobble_board/ui/exercise.dart';
+import 'package:wobble_board/ui/landing_page.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -84,7 +84,7 @@ class _HomeState extends State<Home> {
       onPressed: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => Exercise()),
+          MaterialPageRoute(builder: (context) => Landing()),
         );
       },
       child: Icon(Icons.navigate_next),

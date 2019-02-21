@@ -40,5 +40,17 @@
         "text": "Balance the board for 3 seconds"
       }
     ]
+  },
+  {
+    "name": "Game",
+    "type": "game",
+    "steps": [
+      {
+        "goal": 10,
+        "axis": "y",
+        "time": 0,
+        "text": "Tilt the board forward for as long as possible"
+      }
+    ]
   }
 ]
