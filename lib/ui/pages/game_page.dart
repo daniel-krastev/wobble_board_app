@@ -24,58 +24,60 @@ class _GameState extends State<Game> {
       appBar: AppBar(
         title: const Text('Wobble Board Game'),
       ),
-      body: Column(
+      body: ListView(
         children: <Widget>[
-          Expanded(
-            child: Exercise(true, updateScore),
-          ),
-          Text(
-            'Top Scores',
-            style: TextStyle(fontSize: 40.0),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          Column(
             children: <Widget>[
-              Padding(
-                padding:
-                    const EdgeInsets.only(bottom: 30.0, right: 10.0, top: 10.0),
-                child: Column(
-                  children: <Widget>[
-                    Text(
-                      'P1',
-                      style: TextStyle(
-                          fontSize: 30.0,
-                          color: (turn % 2 == 0 ? Colors.blue : Colors.black)),
-                    ),
-                    Text(
-                      '${(scores[0] / 1000).toStringAsFixed(2)}',
-                      style: TextStyle(fontSize: 30.0),
-                    ),
-                  ],
-                ),
+              Exercise(true, updateScore),
+              Text(
+                'Top Scores',
+                style: TextStyle(fontSize: 40.0),
               ),
-              Padding(
-                padding:
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Padding(
+                    padding:
+                    const EdgeInsets.only(bottom: 30.0, right: 10.0, top: 10.0),
+                    child: Column(
+                      children: <Widget>[
+                        Text(
+                          'P1',
+                          style: TextStyle(
+                              fontSize: 30.0,
+                              color: (turn % 2 == 0 ? Colors.blue : Colors.black)),
+                        ),
+                        Text(
+                          '${(scores[0] / 1000).toStringAsFixed(2)}',
+                          style: TextStyle(fontSize: 30.0),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding:
                     const EdgeInsets.only(bottom: 30.0, left: 10.0, top: 10.0),
-                child: Column(
-                  children: <Widget>[
-                    Text(
-                      'P2',
-                      style: TextStyle(
-                          fontSize: 30.0,
-                          color: (turn % 2 == 1 ? Colors.blue : Colors.black)),
+                    child: Column(
+                      children: <Widget>[
+                        Text(
+                          'P2',
+                          style: TextStyle(
+                              fontSize: 30.0,
+                              color: (turn % 2 == 1 ? Colors.blue : Colors.black)),
+                        ),
+                        Text(
+                          '${(scores[1] / 1000).toStringAsFixed(2)}',
+                          style: TextStyle(fontSize: 30.0),
+                        ),
+                      ],
                     ),
-                    Text(
-                      '${(scores[1] / 1000).toStringAsFixed(2)}',
-                      style: TextStyle(fontSize: 30.0),
-                    ),
-                  ],
-                ),
+                  )
+                ],
               )
             ],
-          )
+          ),
         ],
-      ),
+      )
     );
   }
 }

@@ -49,8 +49,7 @@ class _ExerciseState extends State<Exercise> {
     }
     bl.dataEventSink.add(bloc.ContinueDataEvent());
 
-    return Scaffold(
-      body: finishedLoading
+    return finishedLoading
           ? Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
@@ -142,8 +141,7 @@ class _ExerciseState extends State<Exercise> {
           Center(
               child: CircularProgressIndicator(
               strokeWidth: 3.0,
-            )),
-    );
+            ));
   }
 
   void _loadExercises() {
