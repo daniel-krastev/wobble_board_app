@@ -66,6 +66,7 @@ class _ExerciseState extends State<Exercise> {
                               currentEx = _exerciseNames.indexOf(newValue);
                               currentStep = 0;
                               gameStep = 0;
+                              _accelerometerValues = [0, 0];
                             });
                           },
                           items: _exerciseNames.map((exercise) {
@@ -225,6 +226,9 @@ class _ExerciseState extends State<Exercise> {
             }
             // stop data stream until next exercise is started
             bl.dataEventSink.add(bloc.StopDataEvent());
+            setState(() {
+              _accelerometerValues = [0, 0];
+            });
           }
           // move to next step of the exercise
           else {
@@ -241,6 +245,9 @@ class _ExerciseState extends State<Exercise> {
             gameStep++;
             // stop data stream until next user has started
             bl.dataEventSink.add(bloc.StopDataEvent());
+            setState(() {
+              _accelerometerValues = [0, 0];
+            });
           }
           stopwatch.stop();
           stopwatch.reset();
