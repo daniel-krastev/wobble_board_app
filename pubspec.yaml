@@ -20,6 +20,9 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
 
+  # A Flutter plugin to use the Cloud Firestore API.
+  cloud_firestore: ^0.9.5+2
+
   #This package provides BLE support.
   flutter_blue: ^0.4.2
 
