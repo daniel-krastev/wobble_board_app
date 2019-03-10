@@ -28,7 +28,7 @@ class _HomeState extends State<Home> {
         _previousState = state;
         return Scaffold(
           appBar: AppBar(
-            title: Text("Wobbly"),
+            title: Text("RehApp"),
             centerTitle: true,
           ),
           floatingActionButton: state == bloc.ConnectionState.CONNECTED

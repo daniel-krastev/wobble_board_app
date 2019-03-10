@@ -8,5 +8,5 @@ main() {
   runApp(BlocProvider(
       bloc: appBloc,
       child: MaterialApp(
-          theme: ThemeData.dark(), title: "Wobble board", home: Home())));
+          theme: ThemeData.dark(), title: "RehApp", home: Home())));
 }
