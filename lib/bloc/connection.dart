@@ -19,7 +19,7 @@ class ConnectionBlock {
 
   //Standard BLoC stream fields
   //Sink: this, Stream: Connection UI
-  final _connectionStateController = StreamController<String>();
+  final _connectionStateController = StreamController<String>.broadcast();
   StreamSink<String> get _inConnState => _connectionStateController.sink;
   Stream<String> get connection => _connectionStateController.stream;
 
@@ -112,6 +112,6 @@ class GetStatusEvent extends ConnectionEvent {}
 class ConnectionState {
   static const BLE_OFF = "Turn your bluetooth on";
   static const CONNECTED = "Connected";
-  static const NOT_FOUND = "Not found. Please, make sure Wobbly is ON.";
+  static const NOT_FOUND = "Not found";
   static const DISCONNECTED = "Disconnected";
 }

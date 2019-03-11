@@ -18,13 +18,12 @@ class About extends StatelessWidget {
                   style: Theme.of(context).primaryTextTheme.title,
                 ),
               ),
-              GestureDetector(
-                onTap: () => Navigator.of(context).pop(),
-                child: Padding(
-                  padding: const EdgeInsets.all(18.0),
-                  child: Icon(Icons.arrow_back),
-                ),
-              ),
+              IconButton(
+                  alignment: Alignment.centerLeft,
+                  iconSize: Theme.of(context).iconTheme.size,
+                  padding: EdgeInsets.all(18.0),
+                  onPressed: () => Navigator.of(context).pop(),
+                  icon: Icon(Icons.arrow_back)),
             ],
           ),
         ],
