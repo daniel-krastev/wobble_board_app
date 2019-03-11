@@ -40,53 +40,57 @@ class _ExerciseState extends State<Exercise> {
 //    final List<String> accelerometer =
 //      _accelerometerValues?.map((double v) => v.toStringAsFixed(1))?.toList();
     if (finishedLoading) {
-      exercises = (widget.isGame)
-          ? exercises.where((ex) => ex['type'].toString() == 'game').toList()
-          : exercises.where((ex) => ex['type'].toString() != 'game').toList();
-      _exerciseNames =
-          exercises?.map<String>((item) => item['name'].toString())?.toList();
-      _dropdownValue = _exerciseNames[currentEx];
+      setState(() {
+        exercises = (widget.isGame)
+            ? exercises.where((ex) => ex['type'].toString() == 'game').toList()
+            : exercises.where((ex) => ex['type'].toString() != 'game').toList();
+        _exerciseNames =
+            exercises?.map<String>((item) => item['name'].toString())?.toList();
+        _dropdownValue = _exerciseNames[currentEx];
+      });
     }
     bl.dataEventSink.add(bloc.ContinueDataEvent());
 
     return finishedLoading
-          ? Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 20.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      DropdownButton<String>(
-                          value: _dropdownValue,
-                          onChanged: (String newValue) {
-                            setState(() {
-                              // set state to the selected exercise
-                              currentEx = _exerciseNames.indexOf(newValue);
-                              currentStep = 0;
-                              gameStep = 0;
-                              _accelerometerValues = [0, 0];
-                            });
-                          },
-                          items: _exerciseNames.map((exercise) {
-                            return DropdownMenuItem<String>(
-                                child: Text(exercise), value: exercise);
-                          }).toList()),
-                    ],
-                  ),
-                ),
-                Row(
+        ? Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20.0),
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Text(
-                      widget.isGame ? '$gameStep' : '$currentStep',
-                      style: TextStyle(fontSize: 30.0),
-                    ),
+                    DropdownButton<String>(
+                        style: TextStyle(color: Colors.blue),
+                        value: _dropdownValue,
+                        onChanged: (String newValue) {
+                          setState(() {
+                            // set state to the selected exercise
+                            currentEx = _exerciseNames.indexOf(newValue);
+                            currentStep = 0;
+                            gameStep = 0;
+                          });
+                        },
+                        items: _exerciseNames.map((exercise) {
+                          return DropdownMenuItem<String>(
+                              child: Text(exercise), value: exercise);
+                        }).toList()),
                   ],
                 ),
-                WobbleBoard(
-                    x: _accelerometerValues[1], y: _accelerometerValues[0]),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    widget.isGame ? '$gameStep' : '$currentStep',
+                    style: TextStyle(fontSize: 30.0, color: Colors.blue),
+                  ),
+                ],
+              ),
+              WobbleBoard(
+                  x: _accelerometerValues[1],
+                  y: _accelerometerValues[0],
+                  currentStep: currentStep),
 //                Icon(Icons.keyboard_arrow_up, size: 50, color: getColor(0)),
 //                Row(
 //                  mainAxisAlignment: MainAxisAlignment.center,
@@ -98,58 +102,58 @@ class _ExerciseState extends State<Exercise> {
 //                  ],
 //                ),
 //                Icon(Icons.keyboard_arrow_down, size: 50, color: getColor(2)),
-                Row(
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    '${stopwatch.elapsed}',
+                    style: TextStyle(fontSize: 30.0),
+                  ),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 20.0),
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text(
-                      '${stopwatch.elapsed}',
-                      style: TextStyle(fontSize: 30.0),
+                      '${exercises[currentEx]['steps'][currentStep]['text']}',
+                      style: TextStyle(fontSize: 15.0, color: Colors.blue),
                     ),
                   ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 20.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        '${exercises[currentEx]['steps'][currentStep]['text']}',
-                        style: TextStyle(fontSize: 15.0, color: Colors.blue),
-                      ),
-                    ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  RaisedButton(
+                      onPressed: () =>
+                          bl.dataEventSink.add(bloc.StartDataEvent()),
+                      child: Text("Start")),
+                  Padding(
+                    padding: EdgeInsets.all(10.0),
                   ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    RaisedButton(
-                        onPressed: () =>
-                            bl.dataEventSink.add(bloc.StartDataEvent()),
-                        child: Text("Start")),
-                    Padding(
-                      padding: EdgeInsets.all(10.0),
-                    ),
-                    RaisedButton(
-                        onPressed: () =>
-                            bl.dataEventSink.add(bloc.StopDataEvent()),
-                        child: Text("Stop")),
-                  ],
-                ),
-              ],
-            )
-          :
-          // show a progress indicator if still loading in exercise data
-          Center(
-              child: CircularProgressIndicator(
-              strokeWidth: 3.0,
-            ));
+                  RaisedButton(
+                      onPressed: () =>
+                          bl.dataEventSink.add(bloc.StopDataEvent()),
+                      child: Text("Stop")),
+                ],
+              ),
+            ],
+          )
+        :
+        // show a progress indicator if still loading in exercise data
+        Center(
+            child: CircularProgressIndicator(
+            strokeWidth: 3.0,
+          ));
   }
 
   void _loadExercises() {
     rootBundle.loadString('assets/exercises.json').then((obj) {
       print("_loadExercises");
-      exercises = json.decode(obj);
       setState(() {
+        exercises = json.decode(obj);
         finishedLoading = true;
       });
     });
@@ -215,14 +219,20 @@ class _ExerciseState extends State<Exercise> {
           // this is the last step of the exercise
           if (currentStep == exercises[currentEx]['steps'].length - 1) {
             // reset step count
-            currentStep = 0;
+            setState(() {
+              currentStep = 0;
+            });
             // reset exercises if this is the last one
             if (currentEx == exercises.length - 1) {
-              currentEx = 0;
+              setState(() {
+                currentEx = 0;
+              });
             }
             // else move on to the next exercise
             else {
-              currentEx++;
+              setState(() {
+                currentEx++;
+              });
             }
             // stop data stream until next exercise is started
             bl.dataEventSink.add(bloc.StopDataEvent());
@@ -232,7 +242,9 @@ class _ExerciseState extends State<Exercise> {
           }
           // move to next step of the exercise
           else {
-            currentStep++;
+            setState(() {
+              currentStep++;
+            });
           }
         }
       }
@@ -242,11 +254,11 @@ class _ExerciseState extends State<Exercise> {
           // if game call the callback function to update the scores and increment the step count
           if (widget.isGame) {
             widget.updateScore(stopwatch.elapsedMilliseconds);
-            gameStep++;
             // stop data stream until next user has started
             bl.dataEventSink.add(bloc.StopDataEvent());
             setState(() {
               _accelerometerValues = [0, 0];
+              gameStep++;
             });
           }
           stopwatch.stop();
