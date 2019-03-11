@@ -53,7 +53,7 @@ class _HomeState extends State<Home> {
                   child: SizedBox(),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(18.0),
+                  padding: const EdgeInsets.only(right: 18.0),
                   child: Icon(Icons.more_horiz),
                 )
               ],
