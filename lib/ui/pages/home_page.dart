@@ -6,11 +6,42 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  Drawer _getDrawer() {
+    return Drawer(
+      child: ListView(
+        // Important: Remove any padding from the ListView.
+//        padding: EdgeInsets.zero,
+        children: <Widget>[
+          ListTile(
+            title: Text('Settings',
+            style: Theme.of(context).primaryTextTheme.body1),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, "/settings");
+            },
+              trailing: Icon(Icons.settings)
+          ),
+          ListTile(
+            title: Text('About',
+            style: Theme.of(context).primaryTextTheme.body1),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, "/about");
+            },
+            trailing: Icon(Icons.info),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Container(
-        color: Theme.of(context).backgroundColor,
+    return Scaffold(
+      key: _scaffoldKey,
+      drawer: _getDrawer(),
+      body: SafeArea(
         child: Column(
           children: <Widget>[
             Container(
@@ -18,9 +49,12 @@ class _HomeState extends State<Home> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(18.0),
-                    child: Icon(Icons.menu),
+                  GestureDetector(
+                    onTap: () => _scaffoldKey.currentState.openDrawer(),
+                    child: Padding(
+                      padding: const EdgeInsets.all(18.0),
+                      child: Icon(Icons.menu),
+                    ),
                   ),
                   Expanded(child: Padding(
                     padding: const EdgeInsets.all(18.0),

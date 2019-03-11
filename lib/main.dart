@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:wobble_board/bloc/app.dart';
 import 'package:wobble_board/bloc/bloc_provider.dart';
+import 'package:wobble_board/ui/pages/exercise_page.dart';
+import 'package:wobble_board/ui/pages/settings_page.dart';
+import 'package:wobble_board/ui/pages/about_page.dart';
 import 'package:wobble_board/ui/pages/home_page.dart';
+import 'package:wobble_board/ui/widgets/exercise.dart';
 
 const Color _backgroundColor = Color.fromARGB(255, 245, 245, 245);
 const Color _lightTextColor = Color.fromARGB(255, 153, 157, 160);
@@ -41,5 +45,10 @@ main() {
                   fontWeight: FontWeight.w500
               ),
             )
-      ), title: "RehApp", home: Home())));
+      ), title: "RehApp",
+          routes: <String, WidgetBuilder>{
+            '/about': (_) => About(),
+            '/settings': (_) => Settings(),
+            '/exercise': (_) => ExercisePage(),
+          },home: Home())));
 }

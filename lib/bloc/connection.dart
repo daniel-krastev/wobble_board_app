@@ -98,7 +98,6 @@ class ConnectionBlock {
     _connectionEventController.close();
     _wobblyConnectionSubscription?.cancel();
     _bluetoothStateSubscription?.cancel();
-    _inConnState.add(ConnectionState.DISCONNECTED);
   }
 }
 
