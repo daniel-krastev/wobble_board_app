@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:wobble_board/bloc/bloc_provider.dart';
-import 'package:wobble_board/bloc/connection.dart' as bloc;
-import 'package:wobble_board/ui/pages/landing_page.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -9,130 +6,123 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  bloc.ConnectionBlock bl;
-  bool _searching = false;
-  String _previousState = "_";
-
-  _HomeState();
-
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-      initialData: "",
-      stream: bl.connection,
-      builder: (context, snapshot) {
-        final String state = snapshot.data ?? "";
-        _searching = (state == _previousState &&
-            state != bloc.ConnectionState.CONNECTED &&
-            state != bloc.ConnectionState.BLE_OFF);
-        _previousState = state;
-        return Scaffold(
-          appBar: AppBar(
-            title: Text("RehApp"),
-            centerTitle: true,
-          ),
-          floatingActionButton: state == bloc.ConnectionState.CONNECTED
-              ? _getNextScreenButton()
-              : Container(),
-          body: Stack(
-            fit: StackFit.expand,
-            children: <Widget>[
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+    return SafeArea(
+      child: Container(
+        color: Theme.of(context).backgroundColor,
+        child: Column(
+          children: <Widget>[
+            Container(
+              height: MediaQuery.of(context).size.height * 0.2,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  _getStatus(_searching ? "Searching..." : state),
-                  Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        _getButton(
-                            (state == bloc.ConnectionState.DISCONNECTED ||
-                                    state == bloc.ConnectionState.NOT_FOUND)
-                                ? () {
-                                    bl.connectionEventSink
-                                        .add(bloc.ConnectEvent());
-                                    setState(() {
-                                      _searching = true;
-                                    });
-                                  }
-                                : null,
-                            "Connect"),
-                        Padding(
-                          padding: EdgeInsets.all(10.0),
-                        ),
-                        _getButton(
-                            state == bloc.ConnectionState.CONNECTED
-                                ? () => bl.connectionEventSink
-                                    .add(bloc.DisconnectEvent())
-                                : null,
-                            "Disconnect")
-                      ],
-                    ),
+                  Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child: Icon(Icons.menu),
                   ),
+                  Expanded(child: Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child: Image.asset("assets/images/logo_landscape.png"),
+                  ))
                 ],
               ),
-              _searching ? _getSearchIndicator() : Container(),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  FloatingActionButton _getNextScreenButton() {
-    return FloatingActionButton(
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => Landing()),
-        );
-      },
-      child: Icon(Icons.navigate_next),
-    );
-  }
-
-  @override
-  void dispose() {
-    bl?.dispose();
-    BlocProvider.of(context).dataBloc?.dispose();
-    super.dispose();
-  }
-
-  @override
-  void didChangeDependencies() {
-    bl = BlocProvider.of(context).connectionBloc;
-//    _screenWidth = MediaQuery.of(context).size.width;
-//    _screenHeight = MediaQuery.of(context).size.height;
-    super.didChangeDependencies();
-  }
-
-  Widget _getStatus(final String status) {
-    return Text(
-      "Wobbly:  $status",
-      style: TextStyle(fontSize: 18.0),
-    );
-  }
-
-  RaisedButton _getButton(final VoidCallback onPressed, final String txt) {
-    return RaisedButton(onPressed: onPressed, child: Text(txt));
-  }
-
-  Widget _getSearchIndicator() {
-    return Stack(
-      alignment: Alignment.center,
-      children: <Widget>[
-        Opacity(
-          opacity: 0.65,
-          child: Container(
-            width: 250.0,
-            height: 100.0,
-            decoration: BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.all(Radius.circular(10.0))),
-          ),
+            ),
+            Text(
+              "Balance. Strength. Recovery.",
+              style: Theme.of(context).primaryTextTheme.title,
+            ),
+            SizedBox(
+              height: 80.0,
+            ),
+            Row(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(left: 18.0, right: 9.0),
+                  child: Text(
+                    "Select",
+                    style: Theme.of(context).primaryTextTheme.body1,
+                  ),
+                ),
+                Text(
+                  "Activity:",
+                  style: Theme.of(context).primaryTextTheme.body2,
+                ),
+                Expanded(
+                  child: SizedBox(),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(18.0),
+                  child: Icon(Icons.more_horiz),
+                )
+              ],
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: RepoOptions.menuOpt.length,
+                  itemBuilder: (context, count) {
+                  return Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        boxShadow: <BoxShadow>[
+                          BoxShadow(
+                            blurRadius: 20.0,
+                            color: Colors.black26,
+                            offset: Offset(0.0, 5.0)
+                          )
+                        ],
+                      color: Theme.of(context).backgroundColor,
+                      ),
+                      height: 140.0,
+                      child: Column(
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Text(
+                              RepoOptions.menuOpt[count].title,
+                              style: Theme.of(context).primaryTextTheme.body1,
+                              textScaleFactor: 1.5,
+                            ),
+                          ),
+                          Text(
+                              RepoOptions.menuOpt[count].subtitle,
+                            style: Theme.of(context).primaryTextTheme.body2,
+                          ),
+                        ],
+                      )
+                    ),
+                  );
+              }),
+            )
+          ],
         ),
-        CircularProgressIndicator()
-      ],
+      ),
     );
   }
+}
+
+class RepoOptions {
+  static final List<Option> menuOpt = [
+    Option(
+      title: "Exercise",
+      subtitle: "Practice your balance!",
+    ),
+    Option(
+      title: "Recovery",
+      subtitle: "Exercises to get back in shape!",
+    ),
+    Option(
+      title: "Game",
+      subtitle: "Compete with friends!",
+    )
+  ];
+}
+
+class Option {
+  Option({@required this.title, @required this.subtitle, this.img});
+  final String title;
+  final String subtitle;
+  final String img;
 }
