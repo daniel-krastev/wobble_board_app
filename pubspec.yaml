@@ -32,6 +32,8 @@ dependencies:
   #plugin to keep the screen on
   screen: ^0.0.4
 
+  percent_indicator: ^1.0.14
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
