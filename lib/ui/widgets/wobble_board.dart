@@ -32,7 +32,10 @@ class WobbleBoard extends StatelessWidget {
               child: Container(
                 height: 300.0,
                 width: 300.0,
-                child: Image.asset('assets/circle-png.png'),
+                child: Center(child: Container(
+                    width: 150.0,
+                    height: 150.0,
+                    child: Image.asset('assets/circle.png'))),
               ),
               painter: WheelPainter(activeArc: currentStep),
             ),
@@ -43,7 +46,7 @@ class WobbleBoard extends StatelessWidget {
                 color: Colors.white,
               ),
               top: 10.0,
-              left: 130.0,
+              left: 125.0,
             ),
             Positioned(
               child: Icon(
@@ -51,7 +54,7 @@ class WobbleBoard extends StatelessWidget {
                 size: 50,
                 color: Colors.white,
               ),
-              top: 120.0,
+              top: 125.0,
               left: 10.0,
             ),
             Positioned(
@@ -60,7 +63,7 @@ class WobbleBoard extends StatelessWidget {
                 size: 50,
                 color: Colors.white,
               ),
-              top: 120.0,
+              top: 125.0,
               right: 10.0,
             ),
             Positioned(
@@ -69,8 +72,8 @@ class WobbleBoard extends StatelessWidget {
                 size: 50,
                 color: Colors.white,
               ),
-              top: 240.0,
-              left: 130.0,
+              bottom: 10.0,
+              left: 125.0,
             ),
           ],
         ),
