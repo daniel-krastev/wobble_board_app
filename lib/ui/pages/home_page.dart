@@ -14,7 +14,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     leaderboard.snapshots().listen(
         (data) => data.documents.forEach((doc) => print(doc['firstname'])));
-    leaderboard.document().setData({'firstname': 'работи', 'time': 4343.333});
-    return Text('kur');
+    leaderboard.document().setData({'firstname': 'Дани', 'time': 0.00333});
+    return Text('DONE!');
   }
 }
