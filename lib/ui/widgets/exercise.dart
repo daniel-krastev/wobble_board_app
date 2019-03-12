@@ -1,15 +1,19 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:percent_indicator/percent_indicator.dart';
 import 'package:wobble_board/bloc/bloc_provider.dart';
 import 'package:wobble_board/bloc/data.dart' as bloc;
 import 'package:wobble_board/ui/widgets/wobble_board.dart';
 import 'package:wobble_board/utils/ble_utils.dart';
 
 class Exercise extends StatefulWidget {
+  //true if game
   final bool isGame;
+  //func to update the game score
   final Function(int) updateScore;
 
   Exercise(this.isGame, [this.updateScore]);
@@ -29,6 +33,7 @@ class _ExerciseState extends State<Exercise> {
   bool finishedLoading = false;
   String _dropdownValue;
   List<String> _exerciseNames;
+  double progress;
 
   List<int> _accelerometerValues = [0, 0];
   StreamSubscription<dynamic> _streamSubscription;
@@ -51,33 +56,21 @@ class _ExerciseState extends State<Exercise> {
     }
     bl.dataEventSink.add(bloc.ContinueDataEvent());
 
+    //progress bar calculation
+    if (stopwatch.isRunning) {
+      progress = stopwatch.elapsedMilliseconds /
+          exercises[currentEx]['steps'][currentStep]['time'];
+    } else {
+      progress = 0.0;
+    }
+
     return finishedLoading
         ? Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.only(bottom: 20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    DropdownButton<String>(
-                        style: TextStyle(color: Colors.blue),
-                        value: _dropdownValue,
-                        onChanged: (String newValue) {
-                          setState(() {
-                            // set state to the selected exercise
-                            currentEx = _exerciseNames.indexOf(newValue);
-                            currentStep = 0;
-                            gameStep = 0;
-                          });
-                        },
-                        items: _exerciseNames.map((exercise) {
-                          return DropdownMenuItem<String>(
-                              child: Text(exercise), value: exercise);
-                        }).toList()),
-                  ],
-                ),
-              ),
+                  padding: const EdgeInsets.only(bottom: 20.0),
+                  child: createCustomSelector()),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -105,10 +98,12 @@ class _ExerciseState extends State<Exercise> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text(
-                    '${stopwatch.elapsed}',
-                    style: TextStyle(fontSize: 30.0),
-                  ),
+                  LinearPercentIndicator(
+                    width: MediaQuery.of(context).size.width - 50,
+                    lineHeight: 10.0,
+                    percent: min(progress, 1.0),
+                    progressColor: Colors.blue,
+                  )
                 ],
               ),
               Padding(
@@ -157,6 +152,46 @@ class _ExerciseState extends State<Exercise> {
         finishedLoading = true;
       });
     });
+  }
+
+  // creates custom exercise selector
+  Row createCustomSelector() {
+    return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          IconButton(
+              onPressed: () {
+                // move back one exercise if not at the first one
+                if (currentEx > 0) {
+                  setState(() {
+                    currentEx -= 1;
+                    currentStep = 0;
+                    gameStep = 0;
+                  });
+                }
+              },
+              icon: Icon(
+                Icons.keyboard_arrow_left,
+                size: 20,
+              )),
+          // this updates every time the currentEx index is changed
+          Text('$_dropdownValue'),
+          IconButton(
+              onPressed: () {
+                // move to the next exercise if not at the last one
+                if (currentEx < _exerciseNames.length - 1) {
+                  setState(() {
+                    currentEx += 1;
+                    currentStep = 0;
+                    gameStep = 0;
+                  });
+                }
+              },
+              icon: Icon(
+                Icons.keyboard_arrow_right,
+                size: 20,
+              ))
+        ]);
   }
 
   Color getColor(int rowID) {
