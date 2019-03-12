@@ -40,7 +40,7 @@ class _GameState extends State<GamePage> {
                         padding: const EdgeInsets.all(0),
                         child: Text('Game',
                             textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 30,color:Theme.of(context).primaryTextTheme.body1.color)),
+                            style: TextStyle(fontSize: 30,color:Theme.of(context).primaryColorDark)),
                       )),
                   Expanded(
                       child: Padding(
@@ -50,21 +50,21 @@ class _GameState extends State<GamePage> {
                 ],
               ),
             ),
-         Container(
-//            width: 100.0,
-            height: 10,
-            child: TextField(
+            Expanded(
+                child: Padding(
+              padding: const EdgeInsets.only(right: 100.0, left: 100.0),
+              child: TextField(
                   textAlign: TextAlign.center,
                   style:  TextStyle(
-                      fontSize: 14.0, height: 1.0, color: Theme.of(context).primaryTextTheme.title.color),
+                      fontSize: 18.0, height: 1.0, color: Theme.of(context).primaryColorDark),
                   decoration: InputDecoration(
                       border:  OutlineInputBorder(
                           borderSide:  BorderSide()
                       ),
                       labelText: 'Name'
                   ),
-            )),
-//             Exercise(true, updateScore),
+            ))),
+             Exercise(true, updateScore),
           ],
         ),
       ),
