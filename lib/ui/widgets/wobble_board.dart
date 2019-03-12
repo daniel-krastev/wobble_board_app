@@ -21,7 +21,10 @@ class WobbleBoard extends StatelessWidget {
         shape: BoxShape.circle,
       ),
     );
-
+    final double _size = 300.0;
+    final double _iconSize = 50.0;
+    final double _iconOff = 10.0;
+    final double _iconMidOff = ((_size - _iconSize) / 2);
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(25.0),
@@ -30,11 +33,11 @@ class WobbleBoard extends StatelessWidget {
           children: <Widget>[
             CustomPaint(
               child: Container(
-                height: 300.0,
-                width: 300.0,
+                height: _size,
+                width: _size,
                 child: Center(child: Container(
-                    width: 150.0,
-                    height: 150.0,
+                    width: _size / 2,
+                    height: _size / 2,
                     child: Image.asset('assets/circle.png'))),
               ),
               painter: WheelPainter(activeArc: currentStep),
@@ -42,38 +45,38 @@ class WobbleBoard extends StatelessWidget {
             Positioned(
               child: Icon(
                 Icons.keyboard_arrow_up,
-                size: 50,
+                size: _iconSize,
                 color: Colors.white,
               ),
-              top: 10.0,
-              left: 125.0,
+              top: _iconOff,
+              left: _iconMidOff,
             ),
             Positioned(
               child: Icon(
                 Icons.keyboard_arrow_left,
-                size: 50,
+                size: _iconSize,
                 color: Colors.white,
               ),
-              top: 125.0,
-              left: 10.0,
+              top: _iconMidOff,
+              left: _iconOff,
             ),
             Positioned(
               child: Icon(
                 Icons.keyboard_arrow_right,
-                size: 50,
+                size: _iconSize,
                 color: Colors.white,
               ),
               top: 125.0,
-              right: 10.0,
+              right: _iconOff,
             ),
             Positioned(
               child: Icon(
                 Icons.keyboard_arrow_down,
-                size: 50,
+                size: _iconSize,
                 color: Colors.white,
               ),
-              bottom: 10.0,
-              left: 125.0,
+              bottom: _iconOff,
+              left: _iconMidOff,
             ),
           ],
         ),
