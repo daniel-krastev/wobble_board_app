@@ -29,7 +29,7 @@ class Landing extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Game()),
+                    MaterialPageRoute(builder: (context) => GamePage()),
                   );
                 },
                 child: Text("Game")),

@@ -9,14 +9,14 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   _HomeState();
-  
+
   // CollectionReference leaderboard =
   //     Firestore.instance.collection('leaderboard');
 
   //   leaderboard.snapshots().listen(
   //       (data) => data.documents.forEach((doc) => print(doc['firstname'])));
   //   leaderboard.document().setData({'firstname': 'Дани', 'time': 0.00333});
-   
+
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   Drawer _getDrawer() {
@@ -30,7 +30,7 @@ class _HomeState extends State<Home> {
                   style: Theme.of(context).primaryTextTheme.body1),
               onTap: () {
                 Navigator.pop(context);
-                Navigator.pushNamed(context, "/settings");
+                Navigator.pushNamed(context, '/settings');
               },
               trailing: Icon(Icons.settings)),
           ListTile(
@@ -38,7 +38,7 @@ class _HomeState extends State<Home> {
                 Text('About', style: Theme.of(context).primaryTextTheme.body1),
             onTap: () {
               Navigator.pop(context);
-              Navigator.pushNamed(context, "/about");
+              Navigator.pushNamed(context, '/about');
             },
             trailing: Icon(Icons.info),
           ),
@@ -56,7 +56,7 @@ class _HomeState extends State<Home> {
         child: Column(
           children: <Widget>[
             Container(
-              height: MediaQuery.of(context).size.height * 0.2,
+              height: MediaQuery.of(context).size.height * 0.15,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
@@ -69,13 +69,13 @@ class _HomeState extends State<Home> {
                   Expanded(
                       child: Padding(
                     padding: const EdgeInsets.all(18.0),
-                    child: Image.asset("assets/images/logo_landscape.png"),
-                  ))
+                    child: Image.asset('assets/images/logo_landscape.png'),
+                  )),
                 ],
               ),
             ),
             Text(
-              "Balance. Strength. Recovery.",
+              'Balance. Strength. Recovery.',
               style: Theme.of(context).primaryTextTheme.title,
             ),
             SizedBox(
@@ -86,12 +86,12 @@ class _HomeState extends State<Home> {
                 Padding(
                   padding: const EdgeInsets.only(left: 18.0, right: 9.0),
                   child: Text(
-                    "Select",
+                    'Select',
                     style: Theme.of(context).primaryTextTheme.body1,
                   ),
                 ),
                 Text(
-                  "Activity:",
+                  'Activity:',
                   style: Theme.of(context).primaryTextTheme.body2,
                 ),
                 Expanded(
@@ -108,36 +108,44 @@ class _HomeState extends State<Home> {
                   itemCount: RepoOptions.menuOpt.length,
                   itemBuilder: (context, count) {
                     return Padding(
-                      padding: const EdgeInsets.all(18.0),
-                      child: Container(
-                          decoration: BoxDecoration(
-                            boxShadow: <BoxShadow>[
-                              BoxShadow(
-                                  blurRadius: 20.0,
-                                  color: Colors.black26,
-                                  offset: Offset(0.0, 5.0))
-                            ],
-                            color: Theme.of(context).backgroundColor,
-                          ),
-                          height: 140.0,
-                          child: Column(
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.all(12.0),
-                                child: Text(
-                                  RepoOptions.menuOpt[count].title,
-                                  style:
-                                      Theme.of(context).primaryTextTheme.body1,
-                                  textScaleFactor: 1.5,
-                                ),
+                        padding: const EdgeInsets.all(18.0),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(
+                                context, RepoOptions.menuOpt[count].path);
+                          },
+                          child: Container(
+                              decoration: BoxDecoration(
+                                boxShadow: <BoxShadow>[
+                                  BoxShadow(
+                                      blurRadius: 20.0,
+                                      color: Colors.black26,
+                                      offset: Offset(0.0, 5.0))
+                                ],
+                                color: Theme.of(context).backgroundColor,
                               ),
-                              Text(
-                                RepoOptions.menuOpt[count].subtitle,
-                                style: Theme.of(context).primaryTextTheme.body2,
-                              ),
-                            ],
-                          )),
-                    );
+                              height: 140.0,
+                              child: Column(
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.all(12.0),
+                                    child: Text(
+                                      RepoOptions.menuOpt[count].title,
+                                      style: Theme.of(context)
+                                          .primaryTextTheme
+                                          .body1,
+                                      textScaleFactor: 1.5,
+                                    ),
+                                  ),
+                                  Text(
+                                    RepoOptions.menuOpt[count].subtitle,
+                                    style: Theme.of(context)
+                                        .primaryTextTheme
+                                        .body2,
+                                  ),
+                                ],
+                              )),
+                        ));
                   }),
             )
           ],
@@ -164,24 +172,26 @@ class _HomeState extends State<Home> {
 class RepoOptions {
   static final List<Option> menuOpt = [
     Option(
-      title: "Exercise",
-      subtitle: "Practice your balance!",
-    ),
+        title: 'Exercise',
+        subtitle: 'Practice your balance!',
+        path: '/exercise'),
     Option(
-      title: "Recovery",
-      subtitle: "Exercises to get back in shape!",
-    ),
-    Option(
-      title: "Game",
-      subtitle: "Compete with friends!",
-    )
+        title: 'Recovery',
+        subtitle: 'Exercises to get back in shape!',
+        path: '/exercise'),
+    Option(title: 'Game', subtitle: 'Compete with friends!', path: '/game')
   ];
 }
 
 class Option {
-  Option({@required this.title, @required this.subtitle, this.img});
+  Option(
+      {@required this.title,
+      @required this.subtitle,
+      @required this.path,
+      this.img});
 
   final String title;
   final String subtitle;
+  final String path;
   final String img;
 }
