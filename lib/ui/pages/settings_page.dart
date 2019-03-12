@@ -70,11 +70,11 @@ class _SettingsState extends State<Settings> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 _getButton(
-                                    (state ==
-                                                bloc.ConnectionState
-                                                    .DISCONNECTED ||
-                                            state ==
-                                                bloc.ConnectionState.NOT_FOUND)
+                                    ((state ==
+                                        bloc.ConnectionState
+                                            .DISCONNECTED ||
+                                        state ==
+                                            bloc.ConnectionState.NOT_FOUND) && !_searching)
                                         ? () {
                                             bl.connectionEventSink
                                                 .add(bloc.ConnectEvent());
@@ -113,6 +113,7 @@ class _SettingsState extends State<Settings> {
   @override
   void didChangeDependencies() {
     bl = BlocProvider.of(context).connectionBloc;
+    bl.connectionEventSink.add(bloc.GetStatusEvent());
 //    _screenWidth = MediaQuery.of(context).size.width;
 //    _screenHeight = MediaQuery.of(context).size.height;
     super.didChangeDependencies();
