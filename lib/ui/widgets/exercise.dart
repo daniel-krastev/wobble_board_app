@@ -29,11 +29,15 @@ class _ExerciseState extends State<Exercise> {
   int currentStep = 0;
   int gameStep = 1;
   int currentEx = 0;
-  var stopwatch = new Stopwatch();
   bool finishedLoading = false;
   String _dropdownValue;
   List<String> _exerciseNames;
   double progress;
+
+  var totalStopwatch =
+      new Stopwatch(); // stopwatch that counts the total time to complete an exercise
+  var stepStopwatch =
+      new Stopwatch(); // stopwatch that counts the time to complete a single step
 
   List<int> _accelerometerValues = [0, 0];
   StreamSubscription<dynamic> _streamSubscription;
@@ -57,8 +61,8 @@ class _ExerciseState extends State<Exercise> {
     bl.dataEventSink.add(bloc.ContinueDataEvent());
 
     //progress bar calculation
-    if (stopwatch.isRunning) {
-      progress = stopwatch.elapsedMilliseconds /
+    if (stepStopwatch.isRunning) {
+      progress = stepStopwatch.elapsedMilliseconds /
           exercises[currentEx]['steps'][currentStep]['time'];
     } else {
       progress = 0.0;
@@ -84,23 +88,16 @@ class _ExerciseState extends State<Exercise> {
                   x: _accelerometerValues[1],
                   y: _accelerometerValues[0],
                   currentStep: currentStep),
-//                Icon(Icons.keyboard_arrow_up, size: 50, color: getColor(0)),
-//                Row(
-//                  mainAxisAlignment: MainAxisAlignment.center,
-//                  children: <Widget>[
-//                    Icon(Icons.keyboard_arrow_left,
-//                        size: 50, color: getColor(3)),
-//                    Icon(Icons.keyboard_arrow_right,
-//                        size: 50, color: getColor(1)),
-//                  ],
-//                ),
-//                Icon(Icons.keyboard_arrow_down, size: 50, color: getColor(2)),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
+                  Text(
+                    '${totalStopwatch.elapsed}',
+                    style: TextStyle(fontSize: 30.0),
+                  ),
                   LinearPercentIndicator(
-                    width: MediaQuery.of(context).size.width - 50,
-                    lineHeight: 10.0,
+                    width: 100.0,
+                    lineHeight: 8.0,
                     percent: min(progress, 1.0),
                     progressColor: Colors.blue,
                   )
@@ -122,16 +119,10 @@ class _ExerciseState extends State<Exercise> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   RaisedButton(
-                      onPressed: () =>
-                          bl.dataEventSink.add(bloc.StartDataEvent()),
-                      child: Text("Start")),
-                  Padding(
-                    padding: EdgeInsets.all(10.0),
-                  ),
-                  RaisedButton(
-                      onPressed: () =>
-                          bl.dataEventSink.add(bloc.StopDataEvent()),
-                      child: Text("Stop")),
+                      onPressed: () => stopStartExercise(bl),
+                      child: totalStopwatch.isRunning
+                          ? Text("Pause")
+                          : Text("Start")),
                 ],
               ),
             ],
@@ -142,6 +133,16 @@ class _ExerciseState extends State<Exercise> {
             child: CircularProgressIndicator(
             strokeWidth: 3.0,
           ));
+  }
+
+  void stopStartExercise(bloc.DataBlock bl) {
+    if (!totalStopwatch.isRunning) {
+      totalStopwatch.start();
+      bl.dataEventSink.add(bloc.StartDataEvent());
+    } else {
+      totalStopwatch.stop();
+      bl.dataEventSink.add(bloc.StartDataEvent());
+    }
   }
 
   void _loadExercises() {
@@ -243,14 +244,15 @@ class _ExerciseState extends State<Exercise> {
 
       if (condition) {
         // start the stopwatch
-        stopwatch.start();
+        stepStopwatch.start();
 
         // if time elapsed is longer than the required time to hold
         // exercise has been completed
-        if (timeToHold != 0 && stopwatch.elapsedMilliseconds >= timeToHold) {
+        if (timeToHold != 0 &&
+            stepStopwatch.elapsedMilliseconds >= timeToHold) {
           // stop and reset stepwatch
-          stopwatch.stop();
-          stopwatch.reset();
+          stepStopwatch.stop();
+          stepStopwatch.reset();
           // this is the last step of the exercise
           if (currentStep == exercises[currentEx]['steps'].length - 1) {
             // reset step count
@@ -271,6 +273,9 @@ class _ExerciseState extends State<Exercise> {
             }
             // stop data stream until next exercise is started
             bl.dataEventSink.add(bloc.StopDataEvent());
+            //reset total time stepwatch
+            totalStopwatch.stop();
+            totalStopwatch.reset();
             setState(() {
               _accelerometerValues = [0, 0];
             });
@@ -285,10 +290,10 @@ class _ExerciseState extends State<Exercise> {
       }
       // if the accelerometer value is no longer within range then stop and reset the stopwatch
       else {
-        if (stopwatch.isRunning) {
+        if (stepStopwatch.isRunning) {
           // if game call the callback function to update the scores and increment the step count
           if (widget.isGame) {
-            widget.updateScore(stopwatch.elapsedMilliseconds);
+            widget.updateScore(stepStopwatch.elapsedMilliseconds);
             // stop data stream until next user has started
             bl.dataEventSink.add(bloc.StopDataEvent());
             setState(() {
@@ -296,8 +301,8 @@ class _ExerciseState extends State<Exercise> {
               gameStep++;
             });
           }
-          stopwatch.stop();
-          stopwatch.reset();
+          stepStopwatch.stop();
+          stepStopwatch.reset();
         }
       }
     }
