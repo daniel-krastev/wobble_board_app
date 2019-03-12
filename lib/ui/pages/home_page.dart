@@ -18,14 +18,16 @@ class _HomeState extends State<Home> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
+                  Expanded(
+                      child: Padding(
+                    padding: const EdgeInsets.only(
+                        right: 70.0, left: 20.0, top: 5.0),
+                    child: Image.asset("assets/images/logo_landscape.png"),
+                  )),
                   Padding(
-                    padding: const EdgeInsets.all(18.0),
+                    padding: const EdgeInsets.only(right: 20.0),
                     child: Icon(Icons.menu),
                   ),
-                  Expanded(child: Padding(
-                    padding: const EdgeInsets.all(18.0),
-                    child: Image.asset("assets/images/logo_landscape.png"),
-                  ))
                 ],
               ),
             ),
@@ -34,67 +36,68 @@ class _HomeState extends State<Home> {
               style: Theme.of(context).primaryTextTheme.title,
             ),
             SizedBox(
-              height: 80.0,
+              height:30,
             ),
-            Row(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(left: 18.0, right: 9.0),
-                  child: Text(
-                    "Select",
-                    style: Theme.of(context).primaryTextTheme.body1,
-                  ),
-                ),
-                Text(
-                  "Activity:",
-                  style: Theme.of(context).primaryTextTheme.body2,
-                ),
-                Expanded(
-                  child: SizedBox(),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 18.0),
-                  child: Icon(Icons.more_horiz),
-                )
-              ],
-            ),
+            // Row(
+            //   children: <Widget>[
+            //     Padding(
+            //       padding: const EdgeInsets.only(left: 20.0, right: 5.0),
+            //       child: Text(
+            //         "Select",
+            //         style: Theme.of(context).primaryTextTheme.body1,
+            //       ),
+            //     ),
+            //     Text(
+            //       "Activity:",
+            //       style: Theme.of(context).primaryTextTheme.body2,
+            //     ),
+            //     Expanded(
+            //       child: SizedBox(),
+            //     ),
+            //     Padding(
+            //       padding: const EdgeInsets.only(right: 20.0),
+            //       child: Icon(Icons.more_horiz),
+            //     )
+            //   ],
+            // ),
             Expanded(
               child: ListView.builder(
-                itemCount: RepoOptions.menuOpt.length,
+                  itemCount: RepoOptions.menuOpt.length,
                   itemBuilder: (context, count) {
-                  return Padding(
-                    padding: const EdgeInsets.all(18.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        boxShadow: <BoxShadow>[
-                          BoxShadow(
-                            blurRadius: 20.0,
-                            color: Colors.black26,
-                            offset: Offset(0.0, 5.0)
-                          )
-                        ],
-                      color: Theme.of(context).backgroundColor,
-                      ),
-                      height: 140.0,
-                      child: Column(
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: Text(
-                              RepoOptions.menuOpt[count].title,
-                              style: Theme.of(context).primaryTextTheme.body1,
-                              textScaleFactor: 1.5,
-                            ),
+                    return Padding(
+                      padding: const EdgeInsets.only(
+                          left: 40.0, right: 40.0, top: 10.0, bottom: 5.0),
+                      child: Container(
+                          decoration: BoxDecoration(
+                            boxShadow: <BoxShadow>[
+                              BoxShadow(
+                                  blurRadius: 20.0,
+                                  color: Colors.black26,
+                                  offset: Offset(0.0, 5.0))
+                            ],
+                            color: Theme.of(context).backgroundColor,
                           ),
-                          Text(
-                              RepoOptions.menuOpt[count].subtitle,
-                            style: Theme.of(context).primaryTextTheme.body2,
-                          ),
-                        ],
-                      )
-                    ),
-                  );
-              }),
+                          height: 120.0,
+                          child: Column(
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    top: 30.0, bottom: 10.0,),
+                                child: Text(
+                                  RepoOptions.menuOpt[count].title,
+                                  style:
+                                      Theme.of(context).primaryTextTheme.body1,
+                                  textScaleFactor: 1.6,
+                                ),
+                              ),
+                              Text(
+                                RepoOptions.menuOpt[count].subtitle,
+                                style: Theme.of(context).primaryTextTheme.body2,
+                              ),
+                            ],
+                          )),
+                    );
+                  }),
             )
           ],
         ),
@@ -107,15 +110,15 @@ class RepoOptions {
   static final List<Option> menuOpt = [
     Option(
       title: "Exercise",
-      subtitle: "Practice your balance!",
+      subtitle: "Fitness exercises",
     ),
     Option(
       title: "Recovery",
-      subtitle: "Exercises to get back in shape!",
+      subtitle: "Rehabilitation exercises",
     ),
     Option(
       title: "Game",
-      subtitle: "Compete with friends!",
+      subtitle: "Timed competition",
     )
   ];
 }

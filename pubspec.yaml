@@ -77,4 +77,5 @@ flutter:
   # see https://flutter.io/custom-fonts/#from-packages
   assets:
     - assets/exercises.json
+    - assets/images/homepage.png
     - assets/images/logo_landscape.png
