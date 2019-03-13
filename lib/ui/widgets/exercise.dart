@@ -162,9 +162,9 @@ class _ExerciseState extends State<Exercise> {
 
   int getRandomGameStep() {
     Random r = new Random();
-    int random = r.nextInt(3);
+    int random = r.nextInt(4);
     while (currentStep == random) {
-      random = r.nextInt(3);
+      random = r.nextInt(4);
     }
     return random;
   }
