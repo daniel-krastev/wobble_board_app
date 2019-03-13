@@ -39,7 +39,7 @@ class _SettingsState extends State<Settings> {
           ),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.all(18.0),
+              padding: const EdgeInsets.all(10.0),
               child: StreamBuilder(
                 initialData: "",
                 stream: bl.connection,
@@ -71,10 +71,12 @@ class _SettingsState extends State<Settings> {
                               children: <Widget>[
                                 _getButton(
                                     ((state ==
-                                        bloc.ConnectionState
-                                            .DISCONNECTED ||
-                                        state ==
-                                            bloc.ConnectionState.NOT_FOUND) && !_searching)
+                                                    bloc.ConnectionState
+                                                        .DISCONNECTED ||
+                                                state ==
+                                                    bloc.ConnectionState
+                                                        .NOT_FOUND) &&
+                                            !_searching)
                                         ? () {
                                             bl.connectionEventSink
                                                 .add(bloc.ConnectEvent());
