@@ -72,52 +72,46 @@ class _ExerciseState extends State<Exercise> {
         ? Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              Padding(
-                  padding: const EdgeInsets.only(bottom: 20.0),
-                  child: createCustomSelector()),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    widget.isGame ? '$gameStep' : '$currentStep',
-                    style: TextStyle(fontSize: 30.0, color: Colors.blue),
-                  ),
-                ],
-              ),
+              // exercise selector
+              createCustomSelector(),
+              // board
               WobbleBoard(
                   x: _accelerometerValues[1],
                   y: _accelerometerValues[0],
                   currentStep: currentStep),
+              // instructions and progress bar
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text(
-                    '${totalStopwatch.elapsed}',
-                    style: TextStyle(fontSize: 30.0),
+                  Column(
+                    children: <Widget>[
+                      Text(
+                        '${exercises[currentEx]['steps'][currentStep]['text']}',
+                        style: TextStyle(fontSize: 15.0, color: Colors.blue),
+                      ),
+                      LinearPercentIndicator(
+                        width: MediaQuery.of(context).size.width - 50,
+                        lineHeight: 10.0,
+                        percent: min(progress, 1.0),
+                        progressColor: Colors.blue,
+                      ),
+                    ],
                   ),
-                  LinearPercentIndicator(
-                    width: 100.0,
-                    lineHeight: 8.0,
-                    percent: min(progress, 1.0),
-                    progressColor: Colors.blue,
-                  )
                 ],
               ),
-              Padding(
-                padding: const EdgeInsets.only(top: 20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      '${exercises[currentEx]['steps'][currentStep]['text']}',
-                      style: TextStyle(fontSize: 15.0, color: Colors.blue),
-                    ),
-                  ],
-                ),
-              ),
+              // total time and start/stop button
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        '${totalStopwatch.elapsed}',
+                        style: TextStyle(fontSize: 30.0),
+                      ),
+                    ],
+                  ),
                   RaisedButton(
                       onPressed: () => stopStartExercise(bl),
                       child: totalStopwatch.isRunning
