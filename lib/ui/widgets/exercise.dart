@@ -27,7 +27,7 @@ class _ExerciseState extends State<Exercise> {
   // TODO: some are not needed, some should be placed elsewhere
   var exercises;
   int currentStep = 0;
-  int gameStep = 1;
+  int gameStep = 0;
   int currentEx = 0;
   bool finishedLoading = false;
   String _dropdownValue;
@@ -61,9 +61,15 @@ class _ExerciseState extends State<Exercise> {
     bl.dataEventSink.add(bloc.ContinueDataEvent());
 
     //progress bar calculation
-    if (stepStopwatch.isRunning) {
-      progress = stepStopwatch.elapsedMilliseconds /
-          exercises[currentEx]['steps'][currentStep]['time'];
+    if (totalStopwatch.isRunning) {
+      if (widget.isGame) {
+        progress = gameStep / 10;
+      } else {
+        if (stepStopwatch.isRunning) {
+          progress = stepStopwatch.elapsedMilliseconds /
+              exercises[currentEx]['steps'][currentStep]['time'];
+        }
+      }
     } else {
       progress = 0.0;
     }
@@ -131,11 +137,16 @@ class _ExerciseState extends State<Exercise> {
 
   void stopStartExercise(bloc.DataBlock bl) {
     if (!totalStopwatch.isRunning) {
+      if (widget.isGame) {
+        setState(() {
+          currentStep = getRandomGameStep();
+        });
+      }
       totalStopwatch.start();
       bl.dataEventSink.add(bloc.StartDataEvent());
     } else {
       totalStopwatch.stop();
-      bl.dataEventSink.add(bloc.StartDataEvent());
+      bl.dataEventSink.add(bloc.StopDataEvent());
     }
   }
 
@@ -147,6 +158,15 @@ class _ExerciseState extends State<Exercise> {
         finishedLoading = true;
       });
     });
+  }
+
+  int getRandomGameStep() {
+    Random r = new Random();
+    int random = r.nextInt(3);
+    while (currentStep == random) {
+      random = r.nextInt(3);
+    }
+    return random;
   }
 
   // creates custom exercise selector
@@ -237,6 +257,20 @@ class _ExerciseState extends State<Exercise> {
       }
 
       if (condition) {
+        if (widget.isGame) {
+          if (gameStep < 9) {
+            setState(() {
+              currentStep = getRandomGameStep();
+              gameStep++;
+            });
+          } else {
+            bl.dataEventSink.add(bloc.StopDataEvent());
+            totalStopwatch.stop();
+            setState(() {
+              _accelerometerValues = [0, 0];
+            });
+          }
+        }
         // start the stopwatch
         stepStopwatch.start();
 
@@ -285,16 +319,6 @@ class _ExerciseState extends State<Exercise> {
       // if the accelerometer value is no longer within range then stop and reset the stopwatch
       else {
         if (stepStopwatch.isRunning) {
-          // if game call the callback function to update the scores and increment the step count
-          if (widget.isGame) {
-            widget.updateScore(stepStopwatch.elapsedMilliseconds);
-            // stop data stream until next user has started
-            bl.dataEventSink.add(bloc.StopDataEvent());
-            setState(() {
-              _accelerometerValues = [0, 0];
-              gameStep++;
-            });
-          }
           stepStopwatch.stop();
           stepStopwatch.reset();
         }

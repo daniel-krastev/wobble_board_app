@@ -37,34 +37,39 @@ class _GameState extends State<GamePage> {
                       icon: Icon(Icons.arrow_back)),
                   Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.all(0),
-                        child: Text('Game',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 30,color:Theme.of(context).primaryTextTheme.body1.color)),
-                      )),
+                    padding: const EdgeInsets.all(0),
+                    child: Text('Game',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 30,
+                            color: Theme.of(context)
+                                .primaryTextTheme
+                                .body1
+                                .color)),
+                  )),
                   Expanded(
                       child: Padding(
-                    padding: const EdgeInsets.only(right:0),
-                    child: Image.asset('assets/images/compete_icon.png',height:60),
+                    padding: const EdgeInsets.only(right: 0),
+                    child: Image.asset('assets/images/compete_icon.png',
+                        height: 60),
                   )),
                 ],
               ),
             ),
-         Container(
-//            width: 100.0,
-            height: 10,
-            child: TextField(
-                  textAlign: TextAlign.center,
-                  style:  TextStyle(
-                      fontSize: 14.0, height: 1.0, color: Theme.of(context).primaryTextTheme.title.color),
-                  decoration: InputDecoration(
-                      border:  OutlineInputBorder(
-                          borderSide:  BorderSide()
-                      ),
-                      labelText: 'Name'
-                  ),
-            )),
-//             Exercise(true, updateScore),
+//            Container(
+////            width: 100.0,
+//                height: 10,
+//                child: TextField(
+//                  textAlign: TextAlign.center,
+//                  style: TextStyle(
+//                      fontSize: 14.0,
+//                      height: 1.0,
+//                      color: Theme.of(context).primaryTextTheme.title.color),
+//                  decoration: InputDecoration(
+//                      border: OutlineInputBorder(borderSide: BorderSide()),
+//                      labelText: 'Name'),
+//                )),
+            Exercise(true, updateScore),
           ],
         ),
       ),

@@ -46,10 +46,28 @@
     "type": "game",
     "steps": [
       {
-        "goal": 10,
+        "goal": 5,
         "axis": "y",
         "time": 0,
-        "text": "Tilt the board forward for as long as possible"
+        "text": "Tilt the board forward"
+      },
+      {
+        "goal": -5,
+        "axis": "x",
+        "time": 0,
+        "text": "Tilt the board right"
+      },
+      {
+        "goal": -5,
+        "axis": "y",
+        "time": 0,
+        "text": "Tilt the board backward"
+      },
+      {
+        "goal": 5,
+        "axis": "x",
+        "time": 0,
+        "text": "Tilt the board left"
       }
     ]
   }
