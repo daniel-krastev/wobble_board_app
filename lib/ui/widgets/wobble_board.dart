@@ -38,7 +38,7 @@ class WobbleBoard extends StatelessWidget {
                 child: Center(child: Container(
                     width: _size / 2,
                     height: _size / 2,
-                    child: Image.asset('assets/circle.png'))),
+                    child: Image.asset('assets/images/circle.png'))),
               ),
               painter: WheelPainter(activeArc: currentStep),
             ),
