@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:wobble_board/bloc/bloc_provider.dart';
+import 'package:wobble_board/ui/widgets/custom_page_route_builder.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -10,14 +11,8 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   _HomeState();
 
-  // CollectionReference leaderboard =
-  //     Firestore.instance.collection('leaderboard');
-
-  //   leaderboard.snapshots().listen(
-  //       (data) => data.documents.forEach((doc) => print(doc['firstname'])));
-  //   leaderboard.document().setData({'firstname': 'Дани', 'time': 0.00333});
-
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  int _tappedPage = -1;
 
   Drawer _getDrawer() {
     return Drawer(
@@ -29,16 +24,14 @@ class _HomeState extends State<Home> {
               title: Text('Settings',
                   style: Theme.of(context).primaryTextTheme.body1),
               onTap: () {
-                Navigator.pop(context);
-                Navigator.pushNamed(context, '/settings');
+                Navigator.popAndPushNamed(context, '/settings');
               },
               trailing: Icon(Icons.settings)),
           ListTile(
             title:
                 Text('About', style: Theme.of(context).primaryTextTheme.body1),
             onTap: () {
-              Navigator.pop(context);
-              Navigator.pushNamed(context, '/about');
+              Navigator.popAndPushNamed(context, '/about');
             },
             trailing: Icon(Icons.info),
           ),
@@ -74,78 +67,111 @@ class _HomeState extends State<Home> {
                 ],
               ),
             ),
-            Text(
-              'Balance. Strength. Recovery.',
-              style: Theme.of(context).primaryTextTheme.title,
-            ),
-            SizedBox(
-              height: 80.0,
-            ),
-            Row(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(left: 18.0, right: 9.0),
-                  child: Text(
-                    'Select',
-                    style: Theme.of(context).primaryTextTheme.body1,
-                  ),
-                ),
-                Text(
-                  'Activity:',
-                  style: Theme.of(context).primaryTextTheme.body2,
-                ),
-                Expanded(
-                  child: SizedBox(),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(18.0),
-                  child: Icon(Icons.more_horiz),
-                )
-              ],
+            Container(
+              height: MediaQuery.of(context).size.height * 0.09,
+              child: Text(
+                'Balance. Strength. Recovery.',
+                style: Theme.of(context).primaryTextTheme.title,
+              ),
             ),
             Expanded(
+              flex: 2,
               child: ListView.builder(
+                  physics: ScrollPhysics(),
                   itemCount: RepoOptions.menuOpt.length,
                   itemBuilder: (context, count) {
                     return Padding(
                         padding: const EdgeInsets.all(18.0),
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.pushNamed(
-                                context, RepoOptions.menuOpt[count].path);
-                          },
-                          child: Container(
-                              decoration: BoxDecoration(
-                                boxShadow: <BoxShadow>[
-                                  BoxShadow(
-                                      blurRadius: 20.0,
-                                      color: Colors.black26,
-                                      offset: Offset(0.0, 5.0))
-                                ],
-                                color: Theme.of(context).backgroundColor,
-                              ),
-                              height: 140.0,
-                              child: Column(
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.all(12.0),
-                                    child: Text(
-                                      RepoOptions.menuOpt[count].title,
-                                      style: Theme.of(context)
-                                          .primaryTextTheme
-                                          .body1,
-                                      textScaleFactor: 1.5,
+                        child: Container(
+                            decoration: BoxDecoration(
+                              boxShadow: <BoxShadow>[
+                                BoxShadow(
+                                    blurRadius: 20.0,
+                                    color: Colors.black26,
+                                    offset: Offset(0.0, 5.0))
+                              ],
+                              color: Theme.of(context).backgroundColor,
+                            ),
+                            height: 140.0,
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.pushNamed(
+                                      context, RepoOptions.menuOpt[count].path);
+                                  setState(() {
+                                    _tappedPage = -1;
+                                  });
+                                },
+                                onTapDown: (_) {
+                                  setState(() {
+                                    _tappedPage = count;
+                                  });
+                                },
+                                onTapCancel: () {
+                                  setState(() {
+                                    _tappedPage = -1;
+                                  });
+                                },
+                                highlightColor: Theme.of(context).primaryColor,
+                                child: Row(
+                                  children: <Widget>[
+                                    Expanded(
+                                      flex: 2,
+                                      child: Column(
+                                        children: <Widget>[
+                                          Padding(
+                                            padding: const EdgeInsets.all(12.0),
+                                            child: Text(
+                                              RepoOptions.menuOpt[count].title,
+                                              style: _tappedPage != count
+                                                  ? Theme.of(context)
+                                                      .primaryTextTheme
+                                                      .body1
+                                                  : Theme.of(context)
+                                                      .primaryTextTheme
+                                                      .body1
+                                                      .copyWith(
+                                                          color: Theme.of(
+                                                                  context)
+                                                              .backgroundColor),
+                                              textScaleFactor: 1.5,
+                                            ),
+                                          ),
+                                          Text(
+                                            RepoOptions.menuOpt[count].subtitle,
+                                            style: _tappedPage != count
+                                                ? Theme.of(context)
+                                                    .primaryTextTheme
+                                                    .body2
+                                                : Theme.of(context)
+                                                    .primaryTextTheme
+                                                    .body2
+                                                    .copyWith(
+                                                        color: Theme.of(context)
+                                                            .backgroundColor),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  Text(
-                                    RepoOptions.menuOpt[count].subtitle,
-                                    style: Theme.of(context)
-                                        .primaryTextTheme
-                                        .body2,
-                                  ),
-                                ],
-                              )),
-                        ));
+                                    Expanded(
+                                        flex: 1,
+                                        child: Image.asset(
+                                          RepoOptions.menuOpt[count].img,
+                                          height: 80,
+                                          color: _tappedPage != count
+                                              ? Theme.of(context)
+                                                  .primaryTextTheme
+                                                  .body1
+                                                  .color
+                                              : Theme.of(context)
+                                                  .backgroundColor,
+                                        ))
+                                  ],
+                                ),
+                              ),
+                            )));
                   }),
             )
           ],
@@ -174,12 +200,18 @@ class RepoOptions {
     Option(
         title: 'Exercise',
         subtitle: 'Practice your balance!',
+        img: "assets/images/exercise.png",
         path: '/exercise'),
     Option(
         title: 'Recovery',
         subtitle: 'Exercises to get back in shape!',
-        path: '/exercise'),
-    Option(title: 'Game', subtitle: 'Compete with friends!', path: '/game')
+        img: "assets/images/recovery.png",
+        path: '/recovery'),
+    Option(
+        title: 'Game',
+        subtitle: 'Compete with friends!',
+        img: "assets/images/trophy.png",
+        path: '/game')
   ];
 }
 
@@ -187,8 +219,8 @@ class Option {
   Option(
       {@required this.title,
       @required this.subtitle,
-      @required this.path,
-      this.img});
+      @required this.img,
+      @required this.path});
 
   final String title;
   final String subtitle;

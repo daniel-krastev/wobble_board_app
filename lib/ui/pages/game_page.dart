@@ -45,7 +45,7 @@ class _GameState extends State<GamePage> {
                   Expanded(
                       child: Padding(
                     padding: const EdgeInsets.only(right:0),
-                    child: Image.asset('assets/images/compete_icon.png',height:60),
+                    child: Image.asset('assets/images/trophy.png',height:60),
                   )),
                 ],
               ),
