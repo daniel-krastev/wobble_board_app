@@ -137,7 +137,7 @@ class _ExerciseState extends State<Exercise> {
 
   void stopStartExercise(bloc.DataBlock bl) {
     if (!totalStopwatch.isRunning) {
-      if (widget.isGame) {
+      if (widget.isGame && gameStep == 0) {
         setState(() {
           currentStep = getRandomGameStep();
         });
@@ -220,6 +220,15 @@ class _ExerciseState extends State<Exercise> {
     return color;
   }
 
+  void resetGame() {
+    totalStopwatch.reset();
+    setState(() {
+      gameStep = 0;
+      currentStep = 0;
+      _accelerometerValues = [0, 0];
+    });
+  }
+
   void checkIfComplete() {
     var axisValue;
     var currentGoal;
@@ -266,9 +275,36 @@ class _ExerciseState extends State<Exercise> {
           } else {
             bl.dataEventSink.add(bloc.StopDataEvent());
             totalStopwatch.stop();
-            setState(() {
-              _accelerometerValues = [0, 0];
-            });
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return Dialog(
+                    child: Container(
+                      height: 300.0,
+                      width: 300.0,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text('Total time:'),
+                          Text('${totalStopwatch.elapsed}'),
+                          Container(
+                            width: 100.0,
+                            child: TextField(
+                              decoration: InputDecoration(labelText: 'Name'),
+                            ),
+                          ),
+                          RaisedButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              resetGame();
+                            },
+                            child: Text('Submit'),
+                          )
+                        ],
+                      ),
+                    ),
+                  );
+                });
           }
         }
         // start the stopwatch
