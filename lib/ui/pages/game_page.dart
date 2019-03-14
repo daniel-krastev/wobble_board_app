@@ -25,7 +25,7 @@ class _GameState extends State<GamePage> {
         child: Column(
           children: <Widget>[
             Container(
-              height: MediaQuery.of(context).size.height * 0.15,
+              height: MediaQuery.of(context).size.height * 0.125,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
@@ -55,19 +55,6 @@ class _GameState extends State<GamePage> {
                 ],
               ),
             ),
-//            Container(
-////            width: 100.0,
-//                height: 10,
-//                child: TextField(
-//                  textAlign: TextAlign.center,
-//                  style: TextStyle(
-//                      fontSize: 14.0,
-//                      height: 1.0,
-//                      color: Theme.of(context).primaryTextTheme.title.color),
-//                  decoration: InputDecoration(
-//                      border: OutlineInputBorder(borderSide: BorderSide()),
-//                      labelText: 'Name'),
-//                )),
             Exercise(true, submitScore),
           ],
         ),

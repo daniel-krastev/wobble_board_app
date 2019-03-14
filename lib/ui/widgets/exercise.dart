@@ -91,12 +91,15 @@ class _ExerciseState extends State<Exercise> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                    Text(
-                      '${totalStopwatch.elapsed}',
-                      style: TextStyle(
-                          fontSize: 30.0,
-                          color:
-                              Theme.of(context).primaryTextTheme.body1.color),
+                    Padding(
+                      padding: EdgeInsets.only(top: 10, bottom: 10),
+                      child: Text(
+                        '${totalStopwatch.elapsed}',
+                        style: TextStyle(
+                            fontSize: 24.0,
+                            color:
+                                Theme.of(context).primaryTextTheme.body1.color),
+                      ),
                     ),
                   ],
                 ),
@@ -110,7 +113,7 @@ class _ExerciseState extends State<Exercise> {
                       Text(
                         '${exercises[currentEx]['steps'][currentStep]['text']}',
                         style: TextStyle(
-                            fontSize: 15.0,
+                            fontSize: 20.0,
                             color: Theme.of(context)
                                 .primaryTextTheme
                                 .subtitle
@@ -226,7 +229,8 @@ class _ExerciseState extends State<Exercise> {
           // this updates every time the currentEx index is changed
           Text('$_dropdownValue',
               style: TextStyle(
-                  color: Theme.of(context).primaryTextTheme.body1.color)),
+                  color: Theme.of(context).primaryTextTheme.body1.color,
+                  fontSize: 20)),
           IconButton(
               onPressed: () {
                 // move to the next exercise if not at the last one
@@ -324,20 +328,27 @@ class _ExerciseState extends State<Exercise> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Text(
-                              'Total time: ${totalStopwatch.elapsed.inMilliseconds / 1000}s',
-                              style: TextStyle(
-                                  color: Theme.of(context)
-                                      .primaryTextTheme
-                                      .body1
-                                      .color)),
+                            'Total time: ${totalStopwatch.elapsed.inMilliseconds / 1000}s',
+                            style: TextStyle(
+                                color: Theme.of(context).primaryColorLight,
+                                fontSize: 18),
+                          ),
                           Container(
-                            width: 120.0,
+                            width: 140.0,
                             height: 80.0,
                             child: Form(
                               key: formKey,
                               child: TextFormField(
-                                decoration: InputDecoration(labelText: 'Name'),
-                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Theme.of(context).primaryColorLight,
+                                    fontSize: 18),
+                                decoration: InputDecoration(
+                                  labelText: 'Name',
+                                  
+                                  // border: new OutlineInputBorder(
+                                  //     borderSide:
+                                  //         new BorderSide(color: Colors.teal)),
+                                ),
                                 validator: (val) =>
                                     val.isEmpty ? 'required field' : null,
                                 onSaved: (val) => _username = val,
