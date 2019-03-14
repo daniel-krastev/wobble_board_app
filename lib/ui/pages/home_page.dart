@@ -15,19 +15,24 @@ class _HomeState extends State<Home> {
   Drawer _getDrawer() {
     return Drawer(
       child: ListView(
-        // Important: Remove any padding from the ListView.
-//        padding: EdgeInsets.zero,
         children: <Widget>[
+          Container(
+            height: MediaQuery.of(context).size.height * 0.125,
+            child: Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child: Image.asset('assets/images/logo_landscape.png'),
+                  ),
+          ),
           ListTile(
               title: Text('Settings',
-                  style: Theme.of(context).primaryTextTheme.body1),
+                  style: Theme.of(context).primaryTextTheme.caption),
               onTap: () {
                 Navigator.popAndPushNamed(context, '/settings');
               },
               trailing: Icon(Icons.settings)),
           ListTile(
-            title:
-                Text('About', style: Theme.of(context).primaryTextTheme.body1),
+            title: Text('About',
+                style: Theme.of(context).primaryTextTheme.caption),
             onTap: () {
               Navigator.popAndPushNamed(context, '/about');
             },

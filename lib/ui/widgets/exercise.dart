@@ -144,22 +144,16 @@ class _ExerciseState extends State<Exercise> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     Expanded(
-                      child: RaisedButton(
-                          onPressed: () => stopStartExercise(bl),
-                          child: totalStopwatch.isRunning
-                              ? Text('Pause',
-                                  style: TextStyle(
-                                      color: Theme.of(context)
-                                          .primaryTextTheme
-                                          .button
-                                          .color))
-                              : Text('Start',
-                                  style: TextStyle(
-                                      color: Theme.of(context)
-                                          .primaryTextTheme
-                                          .button
-                                          .color))),
-                    ),
+                        child: RaisedButton(
+                      onPressed: () => stopStartExercise(bl),
+                      child: totalStopwatch.isRunning
+                          ? Text(
+                              'Pause',
+                              style: Theme.of(context).primaryTextTheme.button,
+                            )
+                          : Text('Start',
+                              style: Theme.of(context).primaryTextTheme.button),
+                    )),
                   ],
                 ),
               ),
@@ -330,7 +324,7 @@ class _ExerciseState extends State<Exercise> {
                             'Total time: ${totalStopwatch.elapsedMilliseconds / 1000}s',
                             style: TextStyle(
                                 color: Theme.of(context).primaryColorLight,
-                                fontSize: 18),
+                                fontSize: 20),
                           ),
                           Container(
                             width: 140.0,
@@ -340,13 +334,9 @@ class _ExerciseState extends State<Exercise> {
                               child: TextFormField(
                                 style: TextStyle(
                                     color: Theme.of(context).primaryColorLight,
-                                    fontSize: 18),
+                                    fontSize: 20),
                                 decoration: InputDecoration(
                                   labelText: 'Name',
-                                  
-                                  // border: new OutlineInputBorder(
-                                  //     borderSide:
-                                  //         new BorderSide(color: Colors.teal)),
                                 ),
                                 validator: (val) =>
                                     val.isEmpty ? 'required field' : null,
@@ -363,7 +353,7 @@ class _ExerciseState extends State<Exercise> {
                                   resetGame();
                                 },
                                 child: Text('Cancel',
-                                    style: TextStyle(color: Colors.white)),
+                                    style: Theme.of(context).primaryTextTheme.button),
                               ),
                               RaisedButton(
                                 onPressed: () {
@@ -378,7 +368,7 @@ class _ExerciseState extends State<Exercise> {
                                   }
                                 },
                                 child: Text('Submit',
-                                    style: TextStyle(color: Colors.white)),
+                                    style: Theme.of(context).primaryTextTheme.button),
                               )
                             ],
                           )

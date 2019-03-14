@@ -52,31 +52,34 @@ main() {
                 iconTheme: IconThemeData(color: _lightTextColor, size: 35.0),
                 fontFamily: "Nunito",
                 primaryTextTheme: TextTheme(
-                  title: TextStyle(
-                    color: _primaryColor,
-                    fontSize: 25.0,
-                  ),
-                  body1: TextStyle(
-                      color: _lightTextColor,
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.w700),
-                  body2: TextStyle(
-                      color: _darkTextColor,
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.w300),
-                  button: TextStyle(
-                      color: _buttonTextColor,
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.w800),
-                  caption: TextStyle(
+                    title: TextStyle(
                       color: _primaryColor,
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.w500),
-                  subtitle: TextStyle(
-                      color: _captionTextColor,
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.w500),
-                )),
+                      fontSize: 25.0,
+                    ),
+                    body1: TextStyle(
+                        color: _lightTextColor,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.w700),
+                    body2: TextStyle(
+                        color: _darkTextColor,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.w300),
+                    button: TextStyle(
+                        color: _buttonTextColor,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.w500),
+                    caption: TextStyle(
+                        color: _primaryColor,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.w500),
+                    subtitle: TextStyle(
+                        color: _captionTextColor,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.w500),
+                    overline: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.w500))),
             title: "RehApp",
             routes: <String, WidgetBuilder>{})));
   });
