@@ -203,15 +203,15 @@ class _HomeState extends State<Home> {
 class RepoOptions {
   static final List<Option> menuOpt = [
     Option(
-        title: 'Exercise',
-        subtitle: 'Practice your balance!',
-        img: "assets/images/exercise.png",
-        path: '/exercise'),
-    Option(
         title: 'Recovery',
         subtitle: 'Exercises to get back in shape!',
         img: "assets/images/recovery.png",
         path: '/recovery'),
+    Option(
+        title: 'Exercise',
+        subtitle: 'Practice your balance!',
+        img: "assets/images/exercise.png",
+        path: '/exercise'),
     Option(
         title: 'Game',
         subtitle: 'Compete with friends!',
