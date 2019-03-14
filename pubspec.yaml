@@ -28,6 +28,9 @@ dependencies:
   #This package provides BLE support.
   flutter_blue: ^0.4.2
 
+  # Helps implement the BLoC pattern.
+  flutter_bloc: ^0.7.1
+
   #accelerometer events
   sensors: ^0.4.0
 

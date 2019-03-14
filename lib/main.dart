@@ -35,7 +35,10 @@ main() {
                   return CustomPageRoute(GamePage(), false);
                   break;
                 case"/exercise":
-                  return CustomPageRoute(Exercise(), false);
+                  return CustomPageRoute(ExercisePage(), false);
+                  break;
+                case"/exercise/go":
+                  return CustomPageRoute(ExercisePage(), false);
                   break;
                 case"/recovery":
                   return CustomPageRoute(RecoveryPage(), false);
@@ -66,8 +69,6 @@ main() {
                       fontWeight: FontWeight.w500),
                 )),
             title: "RehApp",
-            routes: <String, WidgetBuilder>{
-            }
             )
     ));
   });
