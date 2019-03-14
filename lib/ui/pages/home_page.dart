@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:wobble_board/bloc/bloc_provider.dart';
-import 'package:wobble_board/ui/widgets/custom_page_route_builder.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -127,7 +125,7 @@ class _HomeState extends State<Home> {
                                               style: _tappedPage != count
                                                   ? Theme.of(context)
                                                       .primaryTextTheme
-                                                      .body1
+                                                      .caption
                                                   : Theme.of(context)
                                                       .primaryTextTheme
                                                       .body1
@@ -161,10 +159,7 @@ class _HomeState extends State<Home> {
                                           RepoOptions.menuOpt[count].img,
                                           height: 80,
                                           color: _tappedPage != count
-                                              ? Theme.of(context)
-                                                  .primaryTextTheme
-                                                  .body1
-                                                  .color
+                                              ? null
                                               : Theme.of(context)
                                                   .backgroundColor,
                                         ))
