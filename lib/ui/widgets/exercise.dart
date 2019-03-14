@@ -9,6 +9,7 @@ import 'package:wobble_board/bloc/bloc_provider.dart';
 import 'package:wobble_board/bloc/data.dart' as bloc;
 import 'package:wobble_board/ui/widgets/wobble_board.dart';
 import 'package:wobble_board/utils/ble_utils.dart';
+import 'package:wobble_board/utils/wobbly_data.dart';
 
 class Exercise extends StatefulWidget {
   //true if game
@@ -33,6 +34,7 @@ class _ExerciseState extends State<Exercise> {
   String _dropdownValue;
   List<String> _exerciseNames;
   double progress = 0.0;
+  TextEditingController _textController = TextEditingController();
 
   var totalStopwatch =
       new Stopwatch(); // stopwatch that counts the total time to complete an exercise
@@ -138,7 +140,6 @@ class _ExerciseState extends State<Exercise> {
   }
 
   void stopStartExercise(bloc.DataBlock bl) {
-    print(totalStopwatch.isRunning);
     if (!totalStopwatch.isRunning) {
       if (widget.isGame && gameStep == 0) {
         setState(() {
@@ -155,7 +156,6 @@ class _ExerciseState extends State<Exercise> {
 
   void _loadExercises() {
     rootBundle.loadString('assets/exercises.json').then((obj) {
-      print("_loadExercises");
       setState(() {
         exercises = json.decode(obj);
         finishedLoading = true;
@@ -280,6 +280,7 @@ class _ExerciseState extends State<Exercise> {
             bl.dataEventSink.add(bloc.StopDataEvent());
             totalStopwatch.stop();
             showDialog(
+                barrierDismissible: false,
                 context: context,
                 builder: (BuildContext context) {
                   return Dialog(
@@ -294,15 +295,30 @@ class _ExerciseState extends State<Exercise> {
                           Container(
                             width: 100.0,
                             child: TextField(
+                              controller: _textController,
                               decoration: InputDecoration(labelText: 'Name'),
                             ),
                           ),
-                          RaisedButton(
-                            onPressed: () {
-                              Navigator.of(context).pop('dialog');
-                              resetGame();
-                            },
-                            child: Text('Submit'),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: <Widget>[
+                              RaisedButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop('dialog');
+                                  resetGame();
+                                  //TODO Submit to firebase
+//                                  _textController.value; mai taka beshe
+                                },
+                                child: Text('Submit'),
+                              ),
+                              RaisedButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop('dialog');
+                                  resetGame();
+                                },
+                                child: Text('Cancel'),
+                              )
+                            ],
                           )
                         ],
                       ),
@@ -386,7 +402,9 @@ class _ExerciseState extends State<Exercise> {
       setState(() {
         _accelerometerValues = <int>[event[AccAxis.X], event[AccAxis.Y]];
       });
-      checkIfComplete();
+      if(totalStopwatch.isRunning) {
+        checkIfComplete();
+      }
     }));
     super.didChangeDependencies();
   }
