@@ -340,7 +340,7 @@ class _ExerciseState extends State<Exercise> {
                                 textAlign: TextAlign.center,
                                 validator: (val) =>
                                     val.isEmpty ? 'required field' : null,
-                                onFieldSubmitted: (val) => _username = val,
+                                onSaved: (val) => _username = val,
                               ),
                             ),
                           ),
@@ -352,7 +352,7 @@ class _ExerciseState extends State<Exercise> {
                                   if (formKey.currentState.validate()) {
                                     formKey.currentState.save();
                                     widget.submitScore(
-                                        formKey.currentContext.toString(),
+                                        _username,
                                         totalStopwatch.elapsed.inMilliseconds /
                                             1000);
                                     Navigator.of(context).pop('dialog');
