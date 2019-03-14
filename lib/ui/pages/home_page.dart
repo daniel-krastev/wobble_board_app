@@ -79,18 +79,18 @@ class _HomeState extends State<Home> {
                   itemCount: RepoOptions.menuOpt.length,
                   itemBuilder: (context, count) {
                     return Padding(
-                        padding: const EdgeInsets.all(18.0),
+                        padding: const EdgeInsets.all(15.0),
                         child: Container(
                             decoration: BoxDecoration(
                               boxShadow: <BoxShadow>[
                                 BoxShadow(
                                     blurRadius: 20.0,
-                                    color: Colors.black26,
-                                    offset: Offset(0.0, 5.0))
+                                    color: Colors.black12,
+                                    offset: Offset(0.0, 10.0))
                               ],
                               color: Theme.of(context).backgroundColor,
                             ),
-                            height: 140.0,
+                            height: 130.0,
                             child: Material(
                               color: Colors.transparent,
                               child: InkWell(
@@ -116,11 +116,16 @@ class _HomeState extends State<Home> {
                                   children: <Widget>[
                                     Expanded(
                                       flex: 2,
-                                      child: Column(
-                                        children: <Widget>[
-                                          Padding(
-                                            padding: const EdgeInsets.all(12.0),
-                                            child: Text(
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 15.0),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Text(
                                               RepoOptions.menuOpt[count].title,
                                               style: _tappedPage != count
                                                   ? Theme.of(context)
@@ -135,22 +140,22 @@ class _HomeState extends State<Home> {
                                                               .backgroundColor),
                                               textScaleFactor: 1.5,
                                             ),
-                                          ),
-                                          Text(
-                                            RepoOptions.menuOpt[count].subtitle,
-                                            style: _tappedPage != count
-                                                ? Theme.of(context)
-                                                    .primaryTextTheme
-                                                    .body2
-                                                : Theme.of(context)
-                                                    .primaryTextTheme
-                                                    .body2
-                                                    .copyWith(
-                                                        color: Theme.of(context)
-                                                            .backgroundColor),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ],
+                                            Text(
+                                                RepoOptions
+                                                    .menuOpt[count].subtitle,
+                                                style: _tappedPage != count
+                                                    ? Theme.of(context)
+                                                        .primaryTextTheme
+                                                        .body2
+                                                    : Theme.of(context)
+                                                        .primaryTextTheme
+                                                        .body2
+                                                        .copyWith(
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .backgroundColor)),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                     Expanded(

@@ -317,7 +317,6 @@ class _ExerciseState extends State<Exercise> {
             bl.dataEventSink.add(bloc.StopDataEvent());
             totalStopwatch.stop();
             showDialog(
-                barrierDismissible: false,
                 context: context,
                 builder: (BuildContext context) {
                   return Dialog(
@@ -328,7 +327,7 @@ class _ExerciseState extends State<Exercise> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Text(
-                            'Total time: ${totalStopwatch.elapsed.inMilliseconds / 1000}s',
+                            'Total time: ${totalStopwatch.elapsedMilliseconds / 1000}s',
                             style: TextStyle(
                                 color: Theme.of(context).primaryColorLight,
                                 fontSize: 18),
@@ -360,25 +359,25 @@ class _ExerciseState extends State<Exercise> {
                             children: <Widget>[
                               RaisedButton(
                                 onPressed: () {
+                                  Navigator.of(context).pop('dialog');
+                                  resetGame();
+                                },
+                                child: Text('Cancel',
+                                    style: TextStyle(color: Colors.white)),
+                              ),
+                              RaisedButton(
+                                onPressed: () {
                                   if (formKey.currentState.validate()) {
                                     formKey.currentState.save();
                                     widget.submitScore(
                                         _username,
-                                        totalStopwatch.elapsed.inMilliseconds /
+                                        totalStopwatch.elapsedMilliseconds /
                                             1000);
                                     Navigator.of(context).pop('dialog');
                                     resetGame();
                                   }
                                 },
                                 child: Text('Submit',
-                                    style: TextStyle(color: Colors.white)),
-                              ),
-                              RaisedButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop('dialog');
-                                  resetGame();
-                                },
-                                child: Text('Cancel',
                                     style: TextStyle(color: Colors.white)),
                               )
                             ],
@@ -387,7 +386,9 @@ class _ExerciseState extends State<Exercise> {
                       ),
                     ),
                   );
-                });
+                }).then((val) {
+              resetGame();
+            });
           }
         }
         // start the stopwatch
