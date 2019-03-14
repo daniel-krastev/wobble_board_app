@@ -70,7 +70,7 @@ class _GameState extends State<GamePage> {
 //                      border: OutlineInputBorder(borderSide: BorderSide()),
 //                      labelText: 'Name'),
 //                )),
-            Exercise(true, updateScore),
+            Exercise(true,submitScore),
           ],
         ),
       ),

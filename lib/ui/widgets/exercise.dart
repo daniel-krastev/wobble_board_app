@@ -15,9 +15,9 @@ class Exercise extends StatefulWidget {
   //true if game
   final bool isGame;
   //func to update the game score
-  final Function(int) updateScore;
+  final Function(String, double) submitScore;
 
-  Exercise(this.isGame, [this.updateScore]);
+  Exercise(this.isGame, [this.submitScore]);
 
   @override
   _ExerciseState createState() => _ExerciseState();
@@ -31,7 +31,7 @@ class _ExerciseState extends State<Exercise> {
   int gameStep = 0;
   int currentEx = 0;
   bool finishedLoading = false;
-  String _dropdownValue;
+  String _sliderValue;
   List<String> _exerciseNames;
   double progress = 0.0;
   TextEditingController _textController = TextEditingController();
@@ -57,7 +57,7 @@ class _ExerciseState extends State<Exercise> {
             : exercises.where((ex) => ex['type'].toString() != 'game').toList();
         _exerciseNames =
             exercises?.map<String>((item) => item['name'].toString())?.toList();
-        _dropdownValue = _exerciseNames[currentEx];
+        _sliderValue = _exerciseNames[currentEx];
       });
     }
     bl.dataEventSink.add(bloc.ContinueDataEvent());
@@ -97,13 +97,21 @@ class _ExerciseState extends State<Exercise> {
                     children: <Widget>[
                       Text(
                         '${exercises[currentEx]['steps'][currentStep]['text']}',
-                        style: TextStyle(fontSize: 15.0, color: Colors.blue),
+                        style: TextStyle(
+                            fontSize: 15.0,
+                            color: Theme.of(context)
+                                .primaryTextTheme
+                                .subtitle
+                                .color),
                       ),
                       LinearPercentIndicator(
                         width: MediaQuery.of(context).size.width - 50,
                         lineHeight: 10.0,
                         percent: min(progress, 1.0),
-                        progressColor: Colors.blue,
+                        progressColor:
+                            Theme.of(context).primaryColor,
+                        backgroundColor:
+                            Theme.of(context).primaryTextTheme.body1.color,
                       ),
                     ],
                   ),
@@ -118,15 +126,28 @@ class _ExerciseState extends State<Exercise> {
                     children: <Widget>[
                       Text(
                         '${totalStopwatch.elapsed}',
-                        style: TextStyle(fontSize: 30.0),
+                        style: TextStyle(
+                            fontSize: 30.0,
+                            color:
+                                Theme.of(context).primaryTextTheme.body1.color),
                       ),
                     ],
                   ),
                   RaisedButton(
                       onPressed: () => stopStartExercise(bl),
                       child: totalStopwatch.isRunning
-                          ? Text("Pause")
-                          : Text("Start")),
+                          ? Text('Pause',
+                              style: TextStyle(
+                                  color: Theme.of(context)
+                                      .primaryTextTheme
+                                      .button
+                                      .color))
+                          : Text('Start',
+                              style: TextStyle(
+                                  color: Theme.of(context)
+                                      .primaryTextTheme
+                                      .button
+                                      .color))),
                 ],
               ),
             ],
@@ -193,7 +214,9 @@ class _ExerciseState extends State<Exercise> {
                 size: 20,
               )),
           // this updates every time the currentEx index is changed
-          Text('$_dropdownValue'),
+          Text('$_sliderValue',
+              style: TextStyle(
+                  color: Theme.of(context).primaryTextTheme.body1.color)),
           IconButton(
               onPressed: () {
                 // move to the next exercise if not at the last one
@@ -231,6 +254,9 @@ class _ExerciseState extends State<Exercise> {
       _accelerometerValues = [0, 0];
     });
   }
+
+  final formKey = GlobalKey<FormState>();
+  String _username;
 
   void checkIfComplete() {
     var axisValue;
@@ -285,18 +311,30 @@ class _ExerciseState extends State<Exercise> {
                 builder: (BuildContext context) {
                   return Dialog(
                     child: Container(
-                      height: 300.0,
-                      width: 300.0,
+                      height: 200.0,
+                      width: 250.0,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Text('Total time:'),
-                          Text('${totalStopwatch.elapsed}'),
+                          Text(
+                              'Total time: ${totalStopwatch.elapsed.inMilliseconds / 1000}s',
+                              style: TextStyle(
+                                  color: Theme.of(context)
+                                      .primaryTextTheme
+                                      .body1
+                                      .color)),
                           Container(
-                            width: 100.0,
-                            child: TextField(
-                              controller: _textController,
-                              decoration: InputDecoration(labelText: 'Name'),
+                            width: 120.0,
+                            height: 80.0,
+                            child: Form(
+                              key: formKey,
+                              child: TextFormField(
+                                decoration: InputDecoration(labelText: 'Name'),
+                                textAlign: TextAlign.center,
+                                validator: (val) =>
+                                    val.isEmpty ? 'required field' : null,
+                                onFieldSubmitted: (val) => _username = val,
+                              ),
                             ),
                           ),
                           Row(
@@ -304,19 +342,28 @@ class _ExerciseState extends State<Exercise> {
                             children: <Widget>[
                               RaisedButton(
                                 onPressed: () {
-                                  Navigator.of(context).pop('dialog');
-                                  resetGame();
-                                  //TODO Submit to firebase
-//                                  _textController.value; mai taka beshe
+                                  final form = formKey.currentState;
+
+                                  if (form.validate()) {
+                                    form.save();
+                                    widget.submitScore(
+                                        formKey.currentContext.toString(),
+                                        totalStopwatch.elapsed.inMilliseconds /
+                                            1000);
+                                    Navigator.of(context).pop('dialog');
+                                    resetGame();
+                                  }
                                 },
-                                child: Text('Submit'),
+                                child: Text('Submit',
+                                    style: TextStyle(color: Colors.white)),
                               ),
                               RaisedButton(
                                 onPressed: () {
                                   Navigator.of(context).pop('dialog');
                                   resetGame();
                                 },
-                                child: Text('Cancel'),
+                                child: Text('Cancel',
+                                    style: TextStyle(color: Colors.white)),
                               )
                             ],
                           )
@@ -402,7 +449,7 @@ class _ExerciseState extends State<Exercise> {
       setState(() {
         _accelerometerValues = <int>[event[AccAxis.X], event[AccAxis.Y]];
       });
-      if(totalStopwatch.isRunning) {
+      if (totalStopwatch.isRunning) {
         checkIfComplete();
       }
     }));

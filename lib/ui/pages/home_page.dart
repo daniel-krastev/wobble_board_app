@@ -127,7 +127,7 @@ class _HomeState extends State<Home> {
                                               style: _tappedPage != count
                                                   ? Theme.of(context)
                                                       .primaryTextTheme
-                                                      .body1
+                                                      .caption
                                                   : Theme.of(context)
                                                       .primaryTextTheme
                                                       .body1
@@ -161,10 +161,7 @@ class _HomeState extends State<Home> {
                                           RepoOptions.menuOpt[count].img,
                                           height: 80,
                                           color: _tappedPage != count
-                                              ? Theme.of(context)
-                                                  .primaryTextTheme
-                                                  .body1
-                                                  .color
+                                              ? null
                                               : Theme.of(context)
                                                   .backgroundColor,
                                         ))

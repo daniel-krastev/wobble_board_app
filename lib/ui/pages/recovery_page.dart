@@ -64,7 +64,7 @@ class _GameState extends State<GamePage> {
                       labelText: 'Name'
                   ),
             ))),
-             Exercise(true, updateScore),
+             Exercise(true),
           ],
         ),
       ),
