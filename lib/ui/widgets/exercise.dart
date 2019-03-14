@@ -32,7 +32,7 @@ class _ExerciseState extends State<Exercise> {
   bool finishedLoading = false;
   String _dropdownValue;
   List<String> _exerciseNames;
-  double progress;
+  double progress = 0.0;
 
   var totalStopwatch =
       new Stopwatch(); // stopwatch that counts the total time to complete an exercise
@@ -61,13 +61,15 @@ class _ExerciseState extends State<Exercise> {
     bl.dataEventSink.add(bloc.ContinueDataEvent());
 
     //progress bar calculation
-    if (totalStopwatch.isRunning) {
+    if (totalStopwatch.elapsedMilliseconds > 0) {
       if (widget.isGame) {
         progress = gameStep / 10;
       } else {
         if (stepStopwatch.isRunning) {
           progress = stepStopwatch.elapsedMilliseconds /
               exercises[currentEx]['steps'][currentStep]['time'];
+        } else {
+          progress = 0.0;
         }
       }
     } else {
@@ -136,6 +138,7 @@ class _ExerciseState extends State<Exercise> {
   }
 
   void stopStartExercise(bloc.DataBlock bl) {
+    print(totalStopwatch.isRunning);
     if (!totalStopwatch.isRunning) {
       if (widget.isGame && gameStep == 0) {
         setState(() {
@@ -273,6 +276,7 @@ class _ExerciseState extends State<Exercise> {
               gameStep++;
             });
           } else {
+            gameStep++;
             bl.dataEventSink.add(bloc.StopDataEvent());
             totalStopwatch.stop();
             showDialog(
@@ -295,7 +299,7 @@ class _ExerciseState extends State<Exercise> {
                           ),
                           RaisedButton(
                             onPressed: () {
-                              Navigator.of(context).pop();
+                              Navigator.of(context).pop('dialog');
                               resetGame();
                             },
                             child: Text('Submit'),

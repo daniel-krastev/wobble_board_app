@@ -46,25 +46,25 @@
     "type": "game",
     "steps": [
       {
-        "goal": 10,
+        "goal": 7,
         "axis": "y",
         "time": 0,
         "text": "Tilt the board forward"
       },
       {
-        "goal": -10,
+        "goal": -7,
         "axis": "x",
         "time": 0,
         "text": "Tilt the board right"
       },
       {
-        "goal": -10,
+        "goal": -7,
         "axis": "y",
         "time": 0,
         "text": "Tilt the board backward"
       },
       {
-        "goal": 10,
+        "goal": 7,
         "axis": "x",
         "time": 0,
         "text": "Tilt the board left"
