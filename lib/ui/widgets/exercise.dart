@@ -386,7 +386,9 @@ class _ExerciseState extends State<Exercise> {
       setState(() {
         _accelerometerValues = <int>[event[AccAxis.X], event[AccAxis.Y]];
       });
-      checkIfComplete();
+      if (totalStopwatch.isRunning) {
+        checkIfComplete();
+      }
     }));
     super.didChangeDependencies();
   }
