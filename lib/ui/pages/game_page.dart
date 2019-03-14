@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wobble_board/ui/widgets/exercise.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class GamePage extends StatefulWidget {
   @override
@@ -9,13 +10,13 @@ class GamePage extends StatefulWidget {
 class _GameState extends State<GamePage> {
   int turn = 0;
   var scores = [0, 0];
+  CollectionReference leaderboard =
+      Firestore.instance.collection('leaderboard');
 
-  updateScore(score) {
-    setState(() {
-      // only update score if it's higher than the current
-      scores[turn % 2] = (scores[turn % 2] < score) ? score : scores[turn % 2];
-      turn++;
-    });
+  submitScore(username, time) {
+    leaderboard.snapshots().listen(
+        (data) => data.documents.forEach((doc) => print(doc['firstname'])));
+    leaderboard.document().setData({'firstname': username, 'time': time});
   }
 
   @override
