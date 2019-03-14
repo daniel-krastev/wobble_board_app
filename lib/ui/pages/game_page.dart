@@ -14,8 +14,6 @@ class _GameState extends State<GamePage> {
       Firestore.instance.collection('leaderboard');
 
   submitScore(username, time) {
-    leaderboard.snapshots().listen(
-        (data) => data.documents.forEach((doc) => print(doc['firstname'])));
     leaderboard.document().setData({'firstname': username, 'time': time});
   }
 
