@@ -5,11 +5,11 @@ import 'package:wobble_board/bloc/app.dart';
 import 'package:wobble_board/bloc/bloc_provider.dart';
 import 'package:wobble_board/ui/pages/about_page.dart';
 import 'package:wobble_board/ui/pages/exercise_page.dart';
+import 'package:wobble_board/ui/pages/recovery_page.dart';
 import 'package:wobble_board/ui/pages/game_page.dart';
 import 'package:wobble_board/ui/pages/home_page.dart';
 import 'package:wobble_board/ui/pages/settings_page.dart';
 import 'package:wobble_board/ui/widgets/custom_page_route_builder.dart';
-import 'package:wobble_board/utils/wobbly_data.dart';
 
 main() {
   Screen.keepOn(true);
@@ -19,7 +19,6 @@ main() {
     runApp(BlocProvider(
         bloc: appBloc,
         child: MaterialApp(
-//            initialRoute: "/",
             home: Home(),
             onGenerateRoute: (RouteSettings s) {
               switch(s.name) {
@@ -36,10 +35,10 @@ main() {
                   return CustomPageRoute(GamePage(), false);
                   break;
                 case"/exercise":
-                  return CustomPageRoute(ExercisePage(), false);
+                  return CustomPageRoute(Exercise(), false);
                   break;
                 case"/recovery":
-                  return CustomPageRoute(ExercisePage(), false);
+                  return CustomPageRoute(RecoveryPage(), false);
                   break;
               }
             },
@@ -68,11 +67,6 @@ main() {
                 )),
             title: "RehApp",
             routes: <String, WidgetBuilder>{
-//              '/': (context) => Home(),
-//              '/about': (context) => About(),
-//              '/settings': (context) => Settings(),
-//              '/exercise': (context) => ExercisePage(),
-//              '/game': (context) => GamePage(),
             }
             )
     ));

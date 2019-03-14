@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wobble_board/ui/pages/exercise_page.dart';
+import 'package:wobble_board/ui/pages/recovery_page.dart';
 import 'package:wobble_board/ui/pages/game_page.dart';
 
 class Landing extends StatelessWidget {
@@ -18,7 +18,7 @@ class Landing extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ExercisePage()),
+                    MaterialPageRoute(builder: (context) => RecoveryPage()),
                   );
                 },
                 child: Text("Exercise")),
