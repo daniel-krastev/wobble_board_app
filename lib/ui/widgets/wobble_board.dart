@@ -13,14 +13,6 @@ class WobbleBoard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget boardCircle = new Container(
-      width: 300.0,
-      height: 300.0,
-      decoration: new BoxDecoration(
-        color: Colors.orange,
-        shape: BoxShape.circle,
-      ),
-    );
     final double _size = 300.0;
     final double _iconSize = 50.0;
     final double _iconOff = 10.0;
@@ -35,10 +27,11 @@ class WobbleBoard extends StatelessWidget {
               child: Container(
                 height: _size,
                 width: _size,
-                child: Center(child: Container(
-                    width: _size / 2,
-                    height: _size / 2,
-                    child: Image.asset('assets/images/circle.png'))),
+                child: Center(
+                    child: Container(
+                        width: _size / 2,
+                        height: _size / 2,
+                        child: Image.asset('assets/images/circle.png'))),
               ),
               painter: WheelPainter(activeArc: currentStep),
             ),
@@ -82,44 +75,5 @@ class WobbleBoard extends StatelessWidget {
         ),
       ),
     );
-
-//    return Transform(
-//      transform: Matrix4.identity()
-//        ..setEntry(3, 2, 0.001)
-//        ..rotateX(y / -21.0)
-//        ..rotateY(x / 21.0),
-//      alignment: FractionalOffset.center,
-//      child: Center(
-//        child: Stack(
-//          alignment: AlignmentDirectional(x / -21.0, y / -21.0),
-//          children: <Widget>[
-//            boardCircle,
-//            Positioned(
-//              child: Icon(Icons.keyboard_arrow_up, size: 50),
-//              top: 10.0,
-//              left: 130.0,
-//            ),
-//            Positioned(
-//              child: Icon(Icons.keyboard_arrow_left, size: 50),
-//              top: 120.0,
-//              left: 10.0,
-//            ),
-//            Positioned(
-//              child: Icon(Icons.keyboard_arrow_right, size: 50),
-//              top: 120.0,
-//              right: 10.0,
-//            ),
-//            Positioned(
-//              child: Icon(Icons.keyboard_arrow_down, size: 50),
-//              top: 240.0,
-//              left: 130.0,
-//            ),
-//            Positioned(
-//              child: Icon(Icons.my_location, size: 25),
-//            )
-//          ],
-//        ),
-//      ),
-//    );
   }
 }

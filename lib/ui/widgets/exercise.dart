@@ -9,7 +9,6 @@ import 'package:wobble_board/bloc/bloc_provider.dart';
 import 'package:wobble_board/bloc/data.dart' as bloc;
 import 'package:wobble_board/ui/widgets/wobble_board.dart';
 import 'package:wobble_board/utils/ble_utils.dart';
-import 'package:wobble_board/utils/wobbly_data.dart';
 
 class Exercise extends StatefulWidget {
   //true if game
@@ -84,11 +83,18 @@ class _ExerciseState extends State<Exercise> {
             children: <Widget>[
               // exercise selector
               createCustomSelector(),
-              // board
-              WobbleBoard(
-                  x: _accelerometerValues[1],
-                  y: _accelerometerValues[0],
-                  currentStep: currentStep),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Text(
+                      '${totalStopwatch.elapsed}',
+                      style: TextStyle(fontSize: 30.0),
+                    ),
+                  ],
+                ),
+              ),
               // instructions and progress bar
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -109,25 +115,27 @@ class _ExerciseState extends State<Exercise> {
                   ),
                 ],
               ),
-              // total time and start/stop button
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        '${totalStopwatch.elapsed}',
-                        style: TextStyle(fontSize: 30.0),
-                      ),
-                    ],
-                  ),
-                  RaisedButton(
-                      onPressed: () => stopStartExercise(bl),
-                      child: totalStopwatch.isRunning
-                          ? Text("Pause")
-                          : Text("Start")),
-                ],
+              // board
+              WobbleBoard(
+                  x: _accelerometerValues[1],
+                  y: _accelerometerValues[0],
+                  currentStep: currentStep),
+              // start/stop button
+              Padding(
+                padding: const EdgeInsets.only(
+                    right: 20.0, bottom: 20.0, left: 20.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Expanded(
+                      child: RaisedButton(
+                          onPressed: () => stopStartExercise(bl),
+                          child: totalStopwatch.isRunning
+                              ? Text("Pause")
+                              : Text("Start")),
+                    ),
+                  ],
+                ),
               ),
             ],
           )
@@ -402,7 +410,7 @@ class _ExerciseState extends State<Exercise> {
       setState(() {
         _accelerometerValues = <int>[event[AccAxis.X], event[AccAxis.Y]];
       });
-      if(totalStopwatch.isRunning) {
+      if (totalStopwatch.isRunning) {
         checkIfComplete();
       }
     }));
