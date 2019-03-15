@@ -336,7 +336,7 @@ class _ExerciseState extends State<Exercise> {
                                     color: Theme.of(context).primaryColorLight,
                                     fontSize: 20),
                                 decoration: InputDecoration(
-                                  labelText: 'Name',
+                                  labelText: 'Kent Login',
                                 ),
                                 validator: (val) =>
                                     val.isEmpty ? 'required field' : null,
