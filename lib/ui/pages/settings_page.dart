@@ -23,7 +23,7 @@ class _SettingsState extends State<Settings> {
             children: <Widget>[
               Container(
                 alignment: Alignment.center,
-                height: MediaQuery.of(context).size.height * 0.2,
+                height: MediaQuery.of(context).size.height * 0.125,
                 child: Text(
                   "Settings",
                   style: Theme.of(context).primaryTextTheme.title,
@@ -136,12 +136,9 @@ class _SettingsState extends State<Settings> {
         height: 30.0,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(2.0),
-          gradient: LinearGradient(colors: <Color>[
-            onPressed != null
-                ? Theme.of(context).backgroundColor
-                : Colors.grey[350],
-            Colors.grey[350]
-          ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
+          color: onPressed != null
+              ? Theme.of(context).primaryColor
+              : Colors.grey[300],
           boxShadow: [
             BoxShadow(
                 blurRadius: 1.5,
@@ -154,7 +151,10 @@ class _SettingsState extends State<Settings> {
           child: InkWell(
             onTap: onPressed,
             child: Center(
-              child: Text(txt, style: Theme.of(context).textTheme.body1),
+              child: Text(txt,
+                  style: onPressed != null
+                      ? Theme.of(context).primaryTextTheme.overline
+                      : Theme.of(context).primaryTextTheme.caption),
             ),
           ),
         ),

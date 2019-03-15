@@ -9,6 +9,7 @@ import 'package:wobble_board/ui/pages/go_exercise_page.dart';
 import 'package:wobble_board/ui/pages/recovery_page.dart';
 import 'package:wobble_board/ui/pages/game_page.dart';
 import 'package:wobble_board/ui/pages/home_page.dart';
+import 'package:wobble_board/ui/pages/recovery_page.dart';
 import 'package:wobble_board/ui/pages/settings_page.dart';
 import 'package:wobble_board/ui/widgets/custom_page_route_builder.dart';
 
@@ -48,27 +49,42 @@ main() {
             },
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
-                buttonTheme: ButtonThemeData(),
+                buttonTheme: ButtonThemeData(buttonColor: _primaryColor),
                 backgroundColor: _backgroundColor,
                 primaryColor: _primaryColor,
                 primaryColorLight: _lightTextColor,
                 primaryColorDark: _darkTextColor,
                 iconTheme: IconThemeData(color: _lightTextColor, size: 35.0),
-                fontFamily: "Roboto",
+                fontFamily: "Nunito",
                 primaryTextTheme: TextTheme(
-                  title: TextStyle(
-                    color: _primaryColor,
-                    fontSize: 25.0,
-                  ),
-                  body1: TextStyle(
-                      color: _lightTextColor,
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.w700),
-                  body2: TextStyle(
-                      color: _darkTextColor,
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.w500),
-                )),
+                    title: TextStyle(
+                      color: _primaryColor,
+                      fontSize: 25.0,
+                    ),
+                    body1: TextStyle(
+                        color: _lightTextColor,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.w700),
+                    body2: TextStyle(
+                        color: _darkTextColor,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.w300),
+                    button: TextStyle(
+                        color: _buttonTextColor,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.w500),
+                    caption: TextStyle(
+                        color: _primaryColor,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.w500),
+                    subtitle: TextStyle(
+                        color: _captionTextColor,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.w500),
+                    overline: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.w500))),
             title: "RehApp",
             )
     ));
@@ -78,4 +94,6 @@ main() {
 const Color _backgroundColor = Color.fromARGB(255, 245, 245, 245);
 const Color _darkTextColor = Color.fromARGB(255, 99, 101, 105);
 const Color _lightTextColor = Color.fromARGB(255, 153, 157, 160);
+const Color _captionTextColor = Color.fromARGB(255, 60, 123, 184);
 const Color _primaryColor = Color.fromARGB(255, 181, 211, 243);
+const Color _buttonTextColor = Color.fromARGB(255, 255, 255, 255);

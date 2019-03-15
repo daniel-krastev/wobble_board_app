@@ -18,6 +18,11 @@
 
 # Visual Studio Code related
 .vscode/
+/android/.project
+/android/.settings/
+/android/app/.classpath
+/android/app/.project
+/android/app/.settings/
 
 # Flutter repo-specific
 /bin/cache/

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:wobble_board/bloc/bloc_provider.dart';
-import 'package:wobble_board/ui/widgets/custom_page_route_builder.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -17,19 +15,24 @@ class _HomeState extends State<Home> {
   Drawer _getDrawer() {
     return Drawer(
       child: ListView(
-        // Important: Remove any padding from the ListView.
-//        padding: EdgeInsets.zero,
         children: <Widget>[
+          Container(
+            height: MediaQuery.of(context).size.height * 0.125,
+            child: Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child: Image.asset('assets/images/logo_landscape.png'),
+                  ),
+          ),
           ListTile(
               title: Text('Settings',
-                  style: Theme.of(context).primaryTextTheme.body1),
+                  style: Theme.of(context).primaryTextTheme.caption),
               onTap: () {
                 Navigator.popAndPushNamed(context, '/settings');
               },
               trailing: Icon(Icons.settings)),
           ListTile(
-            title:
-                Text('About', style: Theme.of(context).primaryTextTheme.body1),
+            title: Text('About',
+                style: Theme.of(context).primaryTextTheme.caption),
             onTap: () {
               Navigator.popAndPushNamed(context, '/about');
             },
@@ -81,18 +84,18 @@ class _HomeState extends State<Home> {
                   itemCount: RepoOptions.menuOpt.length,
                   itemBuilder: (context, count) {
                     return Padding(
-                        padding: const EdgeInsets.all(18.0),
+                        padding: const EdgeInsets.all(15.0),
                         child: Container(
                             decoration: BoxDecoration(
                               boxShadow: <BoxShadow>[
                                 BoxShadow(
                                     blurRadius: 20.0,
-                                    color: Colors.black26,
-                                    offset: Offset(0.0, 5.0))
+                                    color: Colors.black12,
+                                    offset: Offset(0.0, 10.0))
                               ],
                               color: Theme.of(context).backgroundColor,
                             ),
-                            height: 140.0,
+                            height: 130.0,
                             child: Material(
                               color: Colors.transparent,
                               child: InkWell(
@@ -118,16 +121,21 @@ class _HomeState extends State<Home> {
                                   children: <Widget>[
                                     Expanded(
                                       flex: 2,
-                                      child: Column(
-                                        children: <Widget>[
-                                          Padding(
-                                            padding: const EdgeInsets.all(12.0),
-                                            child: Text(
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 15.0),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Text(
                                               RepoOptions.menuOpt[count].title,
                                               style: _tappedPage != count
                                                   ? Theme.of(context)
                                                       .primaryTextTheme
-                                                      .body1
+                                                      .caption
                                                   : Theme.of(context)
                                                       .primaryTextTheme
                                                       .body1
@@ -137,22 +145,22 @@ class _HomeState extends State<Home> {
                                                               .backgroundColor),
                                               textScaleFactor: 1.5,
                                             ),
-                                          ),
-                                          Text(
-                                            RepoOptions.menuOpt[count].subtitle,
-                                            style: _tappedPage != count
-                                                ? Theme.of(context)
-                                                    .primaryTextTheme
-                                                    .body2
-                                                : Theme.of(context)
-                                                    .primaryTextTheme
-                                                    .body2
-                                                    .copyWith(
-                                                        color: Theme.of(context)
-                                                            .backgroundColor),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ],
+                                            Text(
+                                                RepoOptions
+                                                    .menuOpt[count].subtitle,
+                                                style: _tappedPage != count
+                                                    ? Theme.of(context)
+                                                        .primaryTextTheme
+                                                        .body2
+                                                    : Theme.of(context)
+                                                        .primaryTextTheme
+                                                        .body2
+                                                        .copyWith(
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .backgroundColor)),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                     Expanded(
@@ -161,10 +169,7 @@ class _HomeState extends State<Home> {
                                           RepoOptions.menuOpt[count].img,
                                           height: 80,
                                           color: _tappedPage != count
-                                              ? Theme.of(context)
-                                                  .primaryTextTheme
-                                                  .body1
-                                                  .color
+                                              ? null
                                               : Theme.of(context)
                                                   .backgroundColor,
                                         ))
@@ -198,15 +203,15 @@ class _HomeState extends State<Home> {
 class RepoOptions {
   static final List<Option> menuOpt = [
     Option(
-        title: 'Exercise',
-        subtitle: 'Practice your balance!',
-        img: "assets/images/exercise.png",
-        path: '/exercise'),
-    Option(
         title: 'Recovery',
         subtitle: 'Exercises to get back in shape!',
         img: "assets/images/recovery.png",
         path: '/recovery'),
+    Option(
+        title: 'Exercise',
+        subtitle: 'Practice your balance!',
+        img: "assets/images/exercise.png",
+        path: '/exercise'),
     Option(
         title: 'Game',
         subtitle: 'Compete with friends!',

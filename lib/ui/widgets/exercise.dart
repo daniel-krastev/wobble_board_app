@@ -9,15 +9,14 @@ import 'package:wobble_board/bloc/bloc_provider.dart';
 import 'package:wobble_board/bloc/data.dart' as bloc;
 import 'package:wobble_board/ui/widgets/wobble_board.dart';
 import 'package:wobble_board/utils/ble_utils.dart';
-import 'package:wobble_board/utils/wobbly_data.dart';
 
 class Exercise extends StatefulWidget {
   //true if game
   final bool isGame;
   //func to update the game score
-  final Function(int) updateScore;
+  final Function(String, double) submitScore;
 
-  Exercise(this.isGame, [this.updateScore]);
+  Exercise(this.isGame, [this.submitScore]);
 
   @override
   _ExerciseState createState() => _ExerciseState();
@@ -43,6 +42,9 @@ class _ExerciseState extends State<Exercise> {
 
   List<int> _accelerometerValues = [0, 0];
   StreamSubscription<dynamic> _streamSubscription;
+
+  final formKey = GlobalKey<FormState>();
+  String _username;
 
   bloc.DataBlock bl;
 
@@ -84,11 +86,24 @@ class _ExerciseState extends State<Exercise> {
             children: <Widget>[
               // exercise selector
               createCustomSelector(),
-              // board
-              WobbleBoard(
-                  x: _accelerometerValues[1],
-                  y: _accelerometerValues[0],
-                  currentStep: currentStep),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.only(top: 10, bottom: 10),
+                      child: Text(
+                        '${totalStopwatch.elapsed}',
+                        style: TextStyle(
+                            fontSize: 24.0,
+                            color:
+                                Theme.of(context).primaryTextTheme.body1.color),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               // instructions and progress bar
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -97,37 +112,50 @@ class _ExerciseState extends State<Exercise> {
                     children: <Widget>[
                       Text(
                         '${exercises[currentEx]['steps'][currentStep]['text']}',
-                        style: TextStyle(fontSize: 15.0, color: Colors.blue),
+                        style: TextStyle(
+                            fontSize: 20.0,
+                            color: Theme.of(context)
+                                .primaryTextTheme
+                                .subtitle
+                                .color),
                       ),
                       LinearPercentIndicator(
                         width: MediaQuery.of(context).size.width - 50,
                         lineHeight: 10.0,
                         percent: min(progress, 1.0),
-                        progressColor: Colors.blue,
+                        progressColor: Theme.of(context).primaryColor,
+                        backgroundColor:
+                            Theme.of(context).primaryTextTheme.body1.color,
                       ),
                     ],
                   ),
                 ],
               ),
-              // total time and start/stop button
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        '${totalStopwatch.elapsed}',
-                        style: TextStyle(fontSize: 30.0),
-                      ),
-                    ],
-                  ),
-                  RaisedButton(
+              // board
+              WobbleBoard(
+                  x: _accelerometerValues[1],
+                  y: _accelerometerValues[0],
+                  currentStep: currentStep),
+              // start/stop button
+              Padding(
+                padding: const EdgeInsets.only(
+                    right: 20.0, bottom: 20.0, left: 20.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Expanded(
+                        child: RaisedButton(
                       onPressed: () => stopStartExercise(bl),
                       child: totalStopwatch.isRunning
-                          ? Text("Pause")
-                          : Text("Start")),
-                ],
+                          ? Text(
+                              'Pause',
+                              style: Theme.of(context).primaryTextTheme.button,
+                            )
+                          : Text('Start',
+                              style: Theme.of(context).primaryTextTheme.button),
+                    )),
+                  ],
+                ),
               ),
             ],
           )
@@ -193,7 +221,10 @@ class _ExerciseState extends State<Exercise> {
                 size: 20,
               )),
           // this updates every time the currentEx index is changed
-          Text('$_dropdownValue'),
+          Text('$_dropdownValue',
+              style: TextStyle(
+                  color: Theme.of(context).primaryTextTheme.body1.color,
+                  fontSize: 20)),
           IconButton(
               onPressed: () {
                 // move to the next exercise if not at the last one
@@ -280,23 +311,37 @@ class _ExerciseState extends State<Exercise> {
             bl.dataEventSink.add(bloc.StopDataEvent());
             totalStopwatch.stop();
             showDialog(
-                barrierDismissible: false,
                 context: context,
                 builder: (BuildContext context) {
                   return Dialog(
                     child: Container(
-                      height: 300.0,
-                      width: 300.0,
+                      height: 200.0,
+                      width: 250.0,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Text('Total time:'),
-                          Text('${totalStopwatch.elapsed}'),
+                          Text(
+                            'Total time: ${totalStopwatch.elapsedMilliseconds / 1000}s',
+                            style: TextStyle(
+                                color: Theme.of(context).primaryColorLight,
+                                fontSize: 20),
+                          ),
                           Container(
-                            width: 100.0,
-                            child: TextField(
-                              controller: _textController,
-                              decoration: InputDecoration(labelText: 'Name'),
+                            width: 140.0,
+                            height: 80.0,
+                            child: Form(
+                              key: formKey,
+                              child: TextFormField(
+                                style: TextStyle(
+                                    color: Theme.of(context).primaryColorLight,
+                                    fontSize: 20),
+                                decoration: InputDecoration(
+                                  labelText: 'Name',
+                                ),
+                                validator: (val) =>
+                                    val.isEmpty ? 'required field' : null,
+                                onSaved: (val) => _username = val,
+                              ),
                             ),
                           ),
                           Row(
@@ -306,17 +351,24 @@ class _ExerciseState extends State<Exercise> {
                                 onPressed: () {
                                   Navigator.of(context).pop('dialog');
                                   resetGame();
-                                  //TODO Submit to firebase
-//                                  _textController.value; mai taka beshe
                                 },
-                                child: Text('Submit'),
+                                child: Text('Cancel',
+                                    style: Theme.of(context).primaryTextTheme.button),
                               ),
                               RaisedButton(
                                 onPressed: () {
-                                  Navigator.of(context).pop('dialog');
-                                  resetGame();
+                                  if (formKey.currentState.validate()) {
+                                    formKey.currentState.save();
+                                    widget.submitScore(
+                                        _username,
+                                        totalStopwatch.elapsedMilliseconds /
+                                            1000);
+                                    Navigator.of(context).pop('dialog');
+                                    resetGame();
+                                  }
                                 },
-                                child: Text('Cancel'),
+                                child: Text('Submit',
+                                    style: Theme.of(context).primaryTextTheme.button),
                               )
                             ],
                           )
@@ -324,7 +376,9 @@ class _ExerciseState extends State<Exercise> {
                       ),
                     ),
                   );
-                });
+                }).then((val) {
+              resetGame();
+            });
           }
         }
         // start the stopwatch
@@ -402,7 +456,7 @@ class _ExerciseState extends State<Exercise> {
       setState(() {
         _accelerometerValues = <int>[event[AccAxis.X], event[AccAxis.Y]];
       });
-      if(totalStopwatch.isRunning) {
+      if (totalStopwatch.isRunning) {
         checkIfComplete();
       }
     }));
