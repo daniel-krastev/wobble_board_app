@@ -5,6 +5,7 @@ import 'package:wobble_board/bloc/app.dart';
 import 'package:wobble_board/bloc/bloc_provider.dart';
 import 'package:wobble_board/ui/pages/about_page.dart';
 import 'package:wobble_board/ui/pages/exercise_page.dart';
+import 'package:wobble_board/ui/pages/go_exercise_page.dart';
 import 'package:wobble_board/ui/pages/recovery_page.dart';
 import 'package:wobble_board/ui/pages/game_page.dart';
 import 'package:wobble_board/ui/pages/home_page.dart';
@@ -38,7 +39,7 @@ main() {
                   return CustomPageRoute(ExercisePage(), false);
                   break;
                 case"/exercise/go":
-                  return CustomPageRoute(ExercisePage(), false);
+                  return CustomPageRoute(ExerciseGO(), false);
                   break;
                 case"/recovery":
                   return CustomPageRoute(RecoveryPage(), false);

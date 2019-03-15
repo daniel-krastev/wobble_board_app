@@ -29,18 +29,18 @@ class ExercisePage extends StatelessWidget {
               ),
               Expanded(
                 child: ListView.builder(
-                    itemCount: ExerciseRepo.exerciseList.length,
+                    itemCount: ExerciseRepo.list.length,
                     itemBuilder: (context, count) {
                       return Column(
                         children: <Widget>[
                           ListTile(
-                            title: Text(ExerciseRepo.exerciseList[count].title),
-                            subtitle: _getSubtitle(count),
+                            title: Text(ExerciseRepo.list[count].title, style: Theme.of(context).primaryTextTheme.body1),
+                            subtitle: _getSubtitle(count, context),
                             //TODO add relevant images, when ready
                             trailing: Container(
                                 height: 35.0,
                                 width: 35.0,
-                                child: Image.asset("assets/images/trophy.png")),
+                                child: Image.asset(ExerciseRepo.list[count].img)),
                           ),
                           Divider()
                         ],
@@ -54,7 +54,9 @@ class ExercisePage extends StatelessWidget {
                     width: double.infinity,
                   child: RaisedButton(
                     padding: const EdgeInsets.all(16.0),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.of(context).pushNamed("/exercise/go");
+                    },
                     child: Text("GO"),
                   ),
                 ),
@@ -64,14 +66,16 @@ class ExercisePage extends StatelessWidget {
         ));
   }
 
-Widget _getSubtitle(final int count) {
-    if(ExerciseRepo.exerciseList[count].dur != null) {
+Widget _getSubtitle(final int count, BuildContext context) {
+    if(ExerciseRepo.list[count].dur != null) {
       return Text(
-          "${ExerciseRepo.exerciseList[count].dur.inSeconds} seconds"
+          "${ExerciseRepo.list[count].dur} seconds"
+          , style: Theme.of(context).primaryTextTheme.body2
       );
     } else {
       return Text(
-          "x ${ExerciseRepo.exerciseList[count].reps}"
+          "x ${ExerciseRepo.list[count].reps}"
+          , style: Theme.of(context).primaryTextTheme.body2
       );
     }
 }
