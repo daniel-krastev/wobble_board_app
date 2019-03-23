@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:wobble_board/bloc/go_page_bloc.dart';
+import 'package:wobble_board/resources/repository.dart';
 
 class ExercisePage extends StatelessWidget {
+  final _repository = Repository();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,18 +31,17 @@ class ExercisePage extends StatelessWidget {
               ),
               Expanded(
                 child: ListView.builder(
-                    itemCount: ExerciseRepo.list.length,
+                    itemCount: _repository.getExercises().length,
                     itemBuilder: (context, count) {
                       return Column(
                         children: <Widget>[
                           ListTile(
-                            title: Text(ExerciseRepo.list[count].title, style: Theme.of(context).primaryTextTheme.body1),
+                            title: Text(_repository.getExercises()[count].title, style: Theme.of(context).primaryTextTheme.body1),
                             subtitle: _getSubtitle(count, context),
-                            //TODO add relevant images, when ready
                             trailing: Container(
                                 height: 35.0,
                                 width: 35.0,
-                                child: Image.asset(ExerciseRepo.list[count].img)),
+                                child: Image.asset(_repository.getExercises()[count].img)),
                           ),
                           Divider()
                         ],
@@ -67,14 +68,14 @@ class ExercisePage extends StatelessWidget {
   }
 
 Widget _getSubtitle(final int count, BuildContext context) {
-    if(ExerciseRepo.list[count].dur != null) {
+    if(_repository.getExercises()[count].dur != null) {
       return Text(
-          "${ExerciseRepo.list[count].dur} seconds"
+          "${_repository.getExercises()[count].dur} seconds"
           , style: Theme.of(context).primaryTextTheme.body2
       );
     } else {
       return Text(
-          "x ${ExerciseRepo.list[count].reps}"
+          "x ${_repository.getExercises()[count].reps}"
           , style: Theme.of(context).primaryTextTheme.body2
       );
     }

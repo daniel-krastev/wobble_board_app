@@ -9,7 +9,6 @@ import 'package:wobble_board/ui/pages/go_exercise_page.dart';
 import 'package:wobble_board/ui/pages/recovery_page.dart';
 import 'package:wobble_board/ui/pages/game_page.dart';
 import 'package:wobble_board/ui/pages/home_page.dart';
-import 'package:wobble_board/ui/pages/recovery_page.dart';
 import 'package:wobble_board/ui/pages/settings_page.dart';
 import 'package:wobble_board/ui/widgets/custom_page_route_builder.dart';
 

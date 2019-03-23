@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:wobble_board/bloc/bloc_provider.dart' as native;
 import 'package:wobble_board/bloc/go_page_bloc.dart';
+import 'package:wobble_board/models/exercise_data.dart';
 
 class ExerciseGO extends StatefulWidget {
   @override
@@ -14,61 +17,64 @@ class _ExerciseGOState extends State<ExerciseGO> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ExerciseEvent, ExerciseModel>(
-      bloc: _bloc,
-      builder: (ctx, mod) {
-        return Scaffold(
-          body: SafeArea(
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    LinearPercentIndicator(
-                      backgroundColor:
-                          Theme.of(context).primaryTextTheme.body1.color,
-                      progressColor: Theme.of(context).primaryColor,
-                      width: MediaQuery.of(context).size.width,
-                      lineHeight: MediaQuery.of(context).size.height * 0.015,
-                      percent: mod.progress,
-                    ),
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10.0),
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: <Widget>[
-                      Image.asset(mod.image,
-                          width: double.infinity,
-                          height: MediaQuery.of(context).size.height * 0.55),
-                      _getIconButton(mod, context)
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Column(
+    return WillPopScope(
+      onWillPop: () => _showExitDialog(context),
+      child: BlocBuilder<ExerciseEvent, ExerciseModel>(
+        bloc: _bloc,
+        builder: (ctx, mod) {
+          return Scaffold(
+            body: SafeArea(
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[_getStatusWidget(mod)]),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10.0),
-                        child: Text(mod.hint,
-                            style: Theme.of(context).primaryTextTheme.body1),
+                      LinearPercentIndicator(
+                        backgroundColor:
+                            Theme.of(context).primaryTextTheme.body1.color,
+                        progressColor: Theme.of(context).primaryColor,
+                        width: MediaQuery.of(context).size.width,
+                        lineHeight: MediaQuery.of(context).size.height * 0.015,
+                        percent: mod.progress,
                       ),
                     ],
                   ),
-                ),
-                _getButtons(mod)
-              ],
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10.0),
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: <Widget>[
+                        Image.asset(mod.image,
+                            width: double.infinity,
+                            height: MediaQuery.of(context).size.height * 0.55),
+                        _getIconButton(mod, context)
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[_getStatusWidget(mod)]),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10.0),
+                          child: Text(mod.hint,
+                              style: Theme.of(context).primaryTextTheme.body1),
+                        ),
+                      ],
+                    ),
+                  ),
+                  _getButtons(mod)
+                ],
+              ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 
@@ -119,7 +125,6 @@ class _ExerciseGOState extends State<ExerciseGO> {
             padding: EdgeInsets.all(0),
             icon: Icon(Icons.arrow_back),
             onPressed: () {
-              _bloc.dispatch(ExerciseEvent.pause);
               _showExitDialog(context);
             }),
       );
@@ -159,7 +164,8 @@ class _ExerciseGOState extends State<ExerciseGO> {
     }
   }
 
-  _showExitDialog(BuildContext context) {
+  Future<bool> _showExitDialog(BuildContext context) {
+    _bloc.dispatch(ExerciseEvent.pause);
     showDialog(
         barrierDismissible: false,
         context: context,
@@ -205,5 +211,6 @@ class _ExerciseGOState extends State<ExerciseGO> {
             ),
           );
         });
+    return Future.value(false);
   }
 }
