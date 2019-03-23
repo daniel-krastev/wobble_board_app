@@ -57,7 +57,7 @@ class GoPageBloc extends Bloc<ExerciseEvent, ExerciseModel> {
         if (_currentStep >= _repository.getExercises().length) {
           dispatch(ExerciseEvent.finish);
         } else {
-          player.play("horn.mp3");
+          player.play("horn.mp3", volume: 0.06);
           yield _getModel(_currentStep);
           _currentStep++;
         }
