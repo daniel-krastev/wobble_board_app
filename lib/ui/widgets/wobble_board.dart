@@ -4,12 +4,17 @@ import 'package:wobble_board/ui/widgets/board_painter.dart';
 
 class WobbleBoard extends StatelessWidget {
   WobbleBoard(
-      {Key key, @required this.x, @required this.y, @required this.currentStep})
+      {Key key,
+      @required this.x,
+      @required this.y,
+      @required this.currentStep,
+      @required this.type})
       : super(key: key);
 
   final int x;
   final int y;
   final int currentStep;
+  final String type;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +26,6 @@ class WobbleBoard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(25.0),
         child: Stack(
-          alignment: AlignmentDirectional(x / -21.0, y / -21.0),
           children: <Widget>[
             CustomPaint(
               child: Container(
@@ -33,7 +37,21 @@ class WobbleBoard extends StatelessWidget {
                         height: _size / 2,
                         child: Image.asset('assets/images/circle.png'))),
               ),
-              painter: WheelPainter(activeArc: currentStep),
+              painter: WheelPainter(activeArc: currentStep, type: type),
+            ),
+            Positioned(
+              child: type == 'circle'
+                  ? RotatedBox(
+                      quarterTurns: 1,
+                      child: Icon(
+                        Icons.autorenew,
+                        size: _iconSize * 2.5,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    )
+                  : new Container(),
+              top: _size / 3.5,
+              left: _size / 3.5,
             ),
             Positioned(
               child: Icon(

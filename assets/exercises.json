@@ -42,6 +42,168 @@
     ]
   },
   {
+    "name": "360",
+    "type": "circle",
+    "steps": [
+      {
+        "goal": 7,
+        "axis": "y",
+        "time": 0,
+        "text": "Tilt the board in a circular motion"
+      },
+      {
+        "goal": -7,
+        "axis": "x",
+        "time": 0,
+        "text": "Tilt the board in a circular motion"
+      },
+      {
+        "goal": -7,
+        "axis": "y",
+        "time": 0,
+        "text": "Tilt the board in a circular motion"
+      },
+      {
+        "goal": 7,
+        "axis": "x",
+        "time": 0,
+        "text": "Tilt the board in a circular motion"
+      }
+    ]
+  },
+  {
+    "name": "Forward backward",
+    "type": "repeat-y",
+    "steps": [
+      {
+        "goal": 5,
+        "axis": "y",
+        "time": 0,
+        "text": "Tilt the board forward"
+      },
+      {
+        "goal": -5,
+        "axis": "y",
+        "time": 0,
+        "text": "Tilt the board backward"
+      },
+      {
+        "goal": 5,
+        "axis": "y",
+        "time": 0,
+        "text": "Tilt the board forward"
+      },
+      {
+        "goal": -5,
+        "axis": "y",
+        "time": 0,
+        "text": "Tilt the board backward"
+      },
+      {
+        "goal": 5,
+        "axis": "y",
+        "time": 0,
+        "text": "Tilt the board forward"
+      },
+      {
+        "goal": -5,
+        "axis": "y",
+        "time": 0,
+        "text": "Tilt the board backward"
+      },
+      {
+        "goal": 5,
+        "axis": "y",
+        "time": 0,
+        "text": "Tilt the board forward"
+      },
+      {
+        "goal": -5,
+        "axis": "y",
+        "time": 0,
+        "text": "Tilt the board backward"
+      },
+      {
+        "goal": 5,
+        "axis": "y",
+        "time": 0,
+        "text": "Tilt the board forward"
+      },
+      {
+        "goal": -5,
+        "axis": "y",
+        "time": 0,
+        "text": "Tilt the board backward"
+      }
+    ]
+  },
+  {
+    "name": "Right left",
+    "type": "repeat-x",
+    "steps": [
+      {
+        "goal": -5,
+        "axis": "x",
+        "time": 0,
+        "text": "Tilt the board right"
+      },
+      {
+        "goal": 5,
+        "axis": "x",
+        "time": 0,
+        "text": "Tilt the board left"
+      },
+      {
+        "goal": -5,
+        "axis": "x",
+        "time": 0,
+        "text": "Tilt the board right"
+      },
+      {
+        "goal": 5,
+        "axis": "x",
+        "time": 0,
+        "text": "Tilt the board left"
+      },
+      {
+        "goal": -5,
+        "axis": "x",
+        "time": 0,
+        "text": "Tilt the board right"
+      },
+      {
+        "goal": 5,
+        "axis": "x",
+        "time": 0,
+        "text": "Tilt the board left"
+      },
+      {
+        "goal": -5,
+        "axis": "x",
+        "time": 0,
+        "text": "Tilt the board right"
+      },
+      {
+        "goal": 5,
+        "axis": "x",
+        "time": 0,
+        "text": "Tilt the board left"
+      },
+      {
+        "goal": -5,
+        "axis": "x",
+        "time": 0,
+        "text": "Tilt the board right"
+      },
+      {
+        "goal": 5,
+        "axis": "x",
+        "time": 0,
+        "text": "Tilt the board left"
+      }
+    ]
+  },
+  {
     "name": "10 Random Tilts",
     "type": "game",
     "steps": [

@@ -68,6 +68,8 @@ class _ExerciseState extends State<Exercise> {
     if (totalStopwatch.elapsedMilliseconds > 0) {
       if (widget.isGame) {
         progress = gameStep / 10;
+      } else if (exercises[currentEx]['type'].startsWith('repeat')) {
+        progress = currentStep / 10;
       } else {
         if (stepStopwatch.isRunning) {
           progress = stepStopwatch.elapsedMilliseconds /
@@ -135,7 +137,8 @@ class _ExerciseState extends State<Exercise> {
               WobbleBoard(
                   x: _accelerometerValues[1],
                   y: _accelerometerValues[0],
-                  currentStep: currentStep),
+                  currentStep: currentStep,
+                  type: exercises[currentEx]["type"]),
               // start/stop button
               Padding(
                 padding: const EdgeInsets.only(
@@ -203,7 +206,7 @@ class _ExerciseState extends State<Exercise> {
   // creates custom exercise selector
   Row createCustomSelector() {
     return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           IconButton(
               onPressed: () {
@@ -289,6 +292,9 @@ class _ExerciseState extends State<Exercise> {
       switch (exType) {
         case 'game':
         case 'movement':
+        case 'circle':
+        case 'repeat-x':
+        case 'repeat-y':
           condition = ((currentGoal < 0 && axisValue <= currentGoal) ||
               (currentGoal > 0 && axisValue >= currentGoal));
           break;
@@ -353,7 +359,9 @@ class _ExerciseState extends State<Exercise> {
                                   resetGame();
                                 },
                                 child: Text('Cancel',
-                                    style: Theme.of(context).primaryTextTheme.button),
+                                    style: Theme.of(context)
+                                        .primaryTextTheme
+                                        .button),
                               ),
                               RaisedButton(
                                 onPressed: () {
@@ -368,7 +376,9 @@ class _ExerciseState extends State<Exercise> {
                                   }
                                 },
                                 child: Text('Submit',
-                                    style: Theme.of(context).primaryTextTheme.button),
+                                    style: Theme.of(context)
+                                        .primaryTextTheme
+                                        .button),
                               )
                             ],
                           )
@@ -381,13 +391,16 @@ class _ExerciseState extends State<Exercise> {
             });
           }
         }
+
         // start the stopwatch
         stepStopwatch.start();
 
         // if time elapsed is longer than the required time to hold
         // exercise has been completed
-        if (timeToHold != 0 &&
-            stepStopwatch.elapsedMilliseconds >= timeToHold) {
+        if ((timeToHold != 0 &&
+                stepStopwatch.elapsedMilliseconds >= timeToHold) ||
+            exercises[currentEx]['type'] == 'circle' ||
+            exercises[currentEx]['type'].startsWith('repeat')) {
           // stop and reset stepwatch
           stepStopwatch.stop();
           stepStopwatch.reset();
