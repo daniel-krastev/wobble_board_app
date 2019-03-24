@@ -4,5 +4,7 @@ import 'package:wobble_board/resources/exercises.dart';
 class Repository {
   final _exerciseProvider = ExerciseRepo();
 
-  List<Exercise> getExercises() => _exerciseProvider.list;
+  Exercise getInitial() => _exerciseProvider.initial;
+  List<Exercise> getExercises() => _exerciseProvider.exercises;
+  List<Exercise> getExercisesWithRests() => _exerciseProvider.exercisesWithRests;
 }
