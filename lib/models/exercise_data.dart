@@ -23,14 +23,17 @@ class InitialExerciseModel extends TimerExerciseModel {
   InitialExerciseModel({
     @required currentSeconds,
     @required isPaused,
-  })  : assert(currentSeconds <= 5),
+    @required image,
+    @required hint,
+    @required totalSeconds
+  })  : assert(currentSeconds <= totalSeconds),
         super(
           isPaused: isPaused,
-          totalSeconds: 5,
+          totalSeconds: totalSeconds,
           currentSeconds: currentSeconds,
-          image: "assets/images/trophy.png",
+          image: image,
           currentStep: 0,
-          hint: "Get ready to start!");
+          hint: hint);
 
   @override
   double get progress => 0;

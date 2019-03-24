@@ -63,6 +63,7 @@ class _ExerciseGOState extends State<ExerciseGO> {
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 10.0),
                           child: Text(mod.hint,
+                              textAlign: TextAlign.center,
                               style: Theme.of(context).primaryTextTheme.body1),
                         ),
                       ],

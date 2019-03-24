@@ -13,12 +13,18 @@ class GoPageBloc extends Bloc<ExerciseEvent, ExerciseModel> {
   AudioCache player = AudioCache(prefix: 'sounds/');
 
   GoPageBloc() {
-    player.loadAll(['cheer.mp3', 'horn.mp3', 'button.mp3', 'tick.mp3']);
+    player.loadAll(['cheer.mp3', 'horn.mp3', 'button.mp3', 'tick.mp3', 'bell.mp3']);
   }
 
   @override
   ExerciseModel get initialState {
-    return InitialExerciseModel(isPaused: false, currentSeconds: 0);
+    return InitialExerciseModel(
+        isPaused: false,
+        currentSeconds: 0,
+        hint: _repository.getInitial().hint,
+        image: _repository.getInitial().img,
+        totalSeconds: _repository.getInitial().dur
+    );
   }
 
   @override
@@ -35,6 +41,9 @@ class GoPageBloc extends Bloc<ExerciseEvent, ExerciseModel> {
         currentState = InitialExerciseModel(
           isPaused: false,
           currentSeconds: 0,
+          hint: _repository.getInitial().hint,
+          image: _repository.getInitial().img,
+          totalSeconds: _repository.getInitial().dur
         );
         yield (currentState as TimerExerciseModel);
         _currentStep = 0;
@@ -54,10 +63,14 @@ class GoPageBloc extends Bloc<ExerciseEvent, ExerciseModel> {
         }
         break;
       case ExerciseEvent.next:
-        if (_currentStep >= _repository.getExercises().length) {
+        if (_currentStep >= _repository.getExercisesWithRests().length) {
           dispatch(ExerciseEvent.finish);
         } else {
-          player.play("horn.mp3", volume: 0.06);
+          if(_currentStep % 2 == 0) {
+            player.play("horn.mp3", volume: 0.06);
+          } else {
+            player.play("bell.mp3", volume: 0.3);
+          }
           yield _getModel(_currentStep);
           _currentStep++;
         }
@@ -95,10 +108,10 @@ class GoPageBloc extends Bloc<ExerciseEvent, ExerciseModel> {
   }
 
   ExerciseModel _getModel(final int count) {
-    Exercise e = _repository.getExercises()[count];
+    Exercise e = _repository.getExercisesWithRests()[count];
     if (e.reps != null) {
       return RepsExerciseModel(
-          currentStep: count, image: e.img, reps: e.reps, hint: e.hint);
+          currentStep: (count / 2).floor(), image: e.img, reps: e.reps, hint: e.hint);
     } else {
       _timer?.cancel();
       _timer = Timer.periodic(Duration(seconds: 1), (t) {
@@ -108,7 +121,7 @@ class GoPageBloc extends Bloc<ExerciseEvent, ExerciseModel> {
           isPaused: false,
           currentSeconds: 0,
           image: e.img,
-          currentStep: count,
+          currentStep: (count / 2).floor(),
           totalSeconds: e.dur,
           hint: e.hint);
     }
