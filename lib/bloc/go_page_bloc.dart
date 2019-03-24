@@ -13,7 +13,7 @@ class GoPageBloc extends Bloc<ExerciseEvent, ExerciseModel> {
   AudioCache player = AudioCache(prefix: 'sounds/');
 
   GoPageBloc() {
-    player.loadAll(['cheer.mp3', 'horn.mp3', 'button.mp3', 'tick.mp3']);
+    player.loadAll(['cheer.mp3', 'horn.mp3', 'button.mp3', 'tick.mp3', 'bell.mp3']);
   }
 
   @override
