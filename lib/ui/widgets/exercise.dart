@@ -7,12 +7,15 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:wobble_board/bloc/bloc_provider.dart';
 import 'package:wobble_board/bloc/data.dart' as bloc;
+import 'package:wobble_board/ui/widgets/custom_dialog.dart';
+import 'package:wobble_board/ui/widgets/custom_selector.dart';
 import 'package:wobble_board/ui/widgets/wobble_board.dart';
 import 'package:wobble_board/utils/ble_utils.dart';
 
 class Exercise extends StatefulWidget {
   //true if game
   final bool isGame;
+
   //func to update the game score
   final Function(String, double) submitScore;
 
@@ -23,17 +26,12 @@ class Exercise extends StatefulWidget {
 }
 
 class _ExerciseState extends State<Exercise> {
-  // TODO: Clean up variables and functions inside whole class - most should be private,
-  // TODO: some are not needed, some should be placed elsewhere
   var exercises;
   int currentStep = 0;
   int gameStep = 0;
   int currentEx = 0;
   bool finishedLoading = false;
-  String _dropdownValue;
-  List<String> _exerciseNames;
   double progress = 0.0;
-  TextEditingController _textController = TextEditingController();
 
   var totalStopwatch =
       new Stopwatch(); // stopwatch that counts the total time to complete an exercise
@@ -43,23 +41,15 @@ class _ExerciseState extends State<Exercise> {
   List<int> _accelerometerValues = [0, 0];
   StreamSubscription<dynamic> _streamSubscription;
 
-  final formKey = GlobalKey<FormState>();
-  String _username;
-
   bloc.DataBlock bl;
 
   @override
   Widget build(BuildContext context) {
-//    final List<String> accelerometer =
-//      _accelerometerValues?.map((double v) => v.toStringAsFixed(1))?.toList();
     if (finishedLoading) {
       setState(() {
         exercises = (widget.isGame)
             ? exercises.where((ex) => ex['type'].toString() == 'game').toList()
             : exercises.where((ex) => ex['type'].toString() != 'game').toList();
-        _exerciseNames =
-            exercises?.map<String>((item) => item['name'].toString())?.toList();
-        _dropdownValue = _exerciseNames[currentEx];
       });
     }
     bl.dataEventSink.add(bloc.ContinueDataEvent());
@@ -87,7 +77,8 @@ class _ExerciseState extends State<Exercise> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               // exercise selector
-              createCustomSelector(),
+              CustomSelector(exercises[currentEx]['name'], switchExercise),
+              // stopwatch
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: Row(
@@ -203,61 +194,21 @@ class _ExerciseState extends State<Exercise> {
     return random;
   }
 
-  // creates custom exercise selector
-  Row createCustomSelector() {
-    return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          IconButton(
-              onPressed: () {
-                // move back one exercise if not at the first one
-                if (currentEx > 0) {
-                  setState(() {
-                    currentEx -= 1;
-                    currentStep = 0;
-                    gameStep = 0;
-                  });
-                }
-              },
-              icon: Icon(
-                Icons.keyboard_arrow_left,
-                size: 20,
-              )),
-          // this updates every time the currentEx index is changed
-          Text('$_dropdownValue',
-              style: TextStyle(
-                  color: Theme.of(context).primaryTextTheme.body1.color,
-                  fontSize: 20)),
-          IconButton(
-              onPressed: () {
-                // move to the next exercise if not at the last one
-                if (currentEx < _exerciseNames.length - 1) {
-                  setState(() {
-                    currentEx += 1;
-                    currentStep = 0;
-                    gameStep = 0;
-                  });
-                }
-              },
-              icon: Icon(
-                Icons.keyboard_arrow_right,
-                size: 20,
-              ))
-        ]);
-  }
-
-  Color getColor(int rowID) {
-    // TODO: Come up with a better way of choosing the color - maybe not needed if using animation
-    Color color;
-    if (currentEx == 1) {
-      color = ((rowID == 1 || rowID == 3) ? Colors.blue : Colors.black);
-    } else {
-      color = (rowID == currentStep ? Colors.blue : Colors.black);
+  void switchExercise(int i) {
+    if ((i < 0 && currentEx > 0) ||
+        (i > 0 && currentEx < exercises.length - 1)) {
+      setState(() {
+        currentEx = currentEx + i;
+        currentStep = 0;
+        gameStep = 0;
+      });
     }
-    return color;
   }
 
-  void resetGame() {
+  void resetGame([String username]) {
+    if (username != null) {
+      widget.submitScore(username, totalStopwatch.elapsedMilliseconds / 1000);
+    }
     totalStopwatch.reset();
     setState(() {
       gameStep = 0;
@@ -275,7 +226,6 @@ class _ExerciseState extends State<Exercise> {
 
     if (exercises != null) {
       // check which axis value to monitor
-      // TODO: Need better way of determining this
       if (exercises[currentEx]['steps'][currentStep]['axis'] == 'x') {
         axisValue = _accelerometerValues[1];
       } else if (exercises[currentEx]['steps'][currentStep]['axis'] == 'xy') {
@@ -288,7 +238,6 @@ class _ExerciseState extends State<Exercise> {
       timeToHold = exercises[currentEx]['steps'][currentStep]['time'];
       exType = exercises[currentEx]['type'];
 
-      // TODO: Work on this - figure out how to store and compute different exercises conditions
       switch (exType) {
         case 'game':
         case 'movement':
@@ -319,73 +268,8 @@ class _ExerciseState extends State<Exercise> {
             showDialog(
                 context: context,
                 builder: (BuildContext context) {
-                  return Dialog(
-                    child: Container(
-                      height: 200.0,
-                      width: 250.0,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            'Total time: ${totalStopwatch.elapsedMilliseconds / 1000}s',
-                            style: TextStyle(
-                                color: Theme.of(context).primaryColorLight,
-                                fontSize: 20),
-                          ),
-                          Container(
-                            width: 140.0,
-                            height: 80.0,
-                            child: Form(
-                              key: formKey,
-                              child: TextFormField(
-                                style: TextStyle(
-                                    color: Theme.of(context).primaryColorLight,
-                                    fontSize: 20),
-                                decoration: InputDecoration(
-                                  labelText: 'Kent Login',
-                                ),
-                                validator: (val) =>
-                                    val.isEmpty ? 'required field' : null,
-                                onSaved: (val) => _username = val,
-                              ),
-                            ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: <Widget>[
-                              RaisedButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop('dialog');
-                                  resetGame();
-                                },
-                                child: Text('Cancel',
-                                    style: Theme.of(context)
-                                        .primaryTextTheme
-                                        .button),
-                              ),
-                              RaisedButton(
-                                onPressed: () {
-                                  if (formKey.currentState.validate()) {
-                                    formKey.currentState.save();
-                                    widget.submitScore(
-                                        _username,
-                                        totalStopwatch.elapsedMilliseconds /
-                                            1000);
-                                    Navigator.of(context).pop('dialog');
-                                    resetGame();
-                                  }
-                                },
-                                child: Text('Submit',
-                                    style: Theme.of(context)
-                                        .primaryTextTheme
-                                        .button),
-                              )
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                  );
+                  return CustomDialog(
+                      totalStopwatch.elapsedMilliseconds / 1000, resetGame);
                 }).then((val) {
               resetGame();
             });
