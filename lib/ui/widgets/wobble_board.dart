@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:wobble_board/ui/widgets/board_painter.dart';
 
+
+/// The Widget that represents the wobble board.
 class WobbleBoard extends StatelessWidget {
   WobbleBoard(
       {Key key,

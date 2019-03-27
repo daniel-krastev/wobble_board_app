@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// THis is the UI for the dialog used in the Game page.
 class CustomDialog extends StatefulWidget {
   final double time;
   final Function callback;

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:wobble_board/ui/widgets/exercise.dart';
 
+
+/// User interface class for the Recovery page.
 class RecoveryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

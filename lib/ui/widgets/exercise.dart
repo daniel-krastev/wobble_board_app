@@ -12,6 +12,9 @@ import 'package:wobble_board/ui/widgets/custom_selector.dart';
 import 'package:wobble_board/ui/widgets/wobble_board.dart';
 import 'package:wobble_board/utils/ble_utils.dart';
 
+
+/// This class uses the Wobble board widget to create each state
+/// of the exercises.
 class Exercise extends StatefulWidget {
   //true if game
   final bool isGame;

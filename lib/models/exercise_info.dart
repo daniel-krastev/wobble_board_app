@@ -1,5 +1,8 @@
 import 'package:meta/meta.dart';
 
+
+/// This class represents the data model for each
+/// exercise in the Exercise flow.
 class Exercise {
   final String title;
 

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+/// Custom router builder.
+///
+/// Used to define a new transition between pages.
 class CustomPageRoute extends PageRouteBuilder {
   CustomPageRoute(final Widget widget, final bool isRightToLeft)
       : super(

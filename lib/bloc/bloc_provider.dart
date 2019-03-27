@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:wobble_board/bloc/app.dart';
 
+/// The bloc provider gives access to the whole application
+/// bloc, which keeps each bloc
 class BlocProvider extends InheritedWidget {
   final AppBloc bloc;
 

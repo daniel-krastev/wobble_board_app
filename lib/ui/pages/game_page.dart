@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:wobble_board/ui/widgets/exercise.dart';
 
+/// User interface for the Game page.
 class GamePage extends StatefulWidget {
   @override
   _GameState createState() => _GameState();

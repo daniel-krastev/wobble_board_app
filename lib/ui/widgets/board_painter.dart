@@ -2,12 +2,14 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+/// Creates the Wobble board widget by painting it on the canvas.
 class WheelPainter extends CustomPainter {
   WheelPainter({Key key, @required this.activeArc, @required this.type});
 
   final int activeArc;
   final String type;
 
+  /// Returns the path that should create the sector
   Path getWheelPath(
       double wheelSize, double fromRadius, double toRadius, bool isActive) {
     return new Path()

@@ -7,6 +7,7 @@ import 'package:wobble_board/bloc/bloc_provider.dart' as native;
 import 'package:wobble_board/bloc/go_page_bloc.dart';
 import 'package:wobble_board/models/exercise_data.dart';
 
+/// User interface for the second page in the Exercise flow.
 class ExerciseGO extends StatefulWidget {
   @override
   _ExerciseGOState createState() => _ExerciseGOState();

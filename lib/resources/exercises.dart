@@ -1,5 +1,7 @@
 import 'package:wobble_board/models/exercise_info.dart';
 
+/// This is a repository class that contains
+/// the information needed for the exercises.
 class ExerciseRepo {
   final List<Exercise> _list = [
     Exercise(

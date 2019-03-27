@@ -6,6 +6,11 @@ import 'package:wobble_board/models/exercise_data.dart';
 import 'package:wobble_board/models/exercise_info.dart';
 import 'package:wobble_board/resources/repository.dart';
 
+
+/// This bloc deals with the Exercise flow
+///
+/// It provides the logic for the Exercise section
+/// of the application.
 class GoPageBloc extends Bloc<ExerciseEvent, ExerciseModel> {
   final _repository = Repository();
   Timer _timer;
@@ -99,6 +104,8 @@ class GoPageBloc extends Bloc<ExerciseEvent, ExerciseModel> {
     }
   }
 
+  /// Returns the model, which is used the
+  /// represent the end of the exercises flow
   ExerciseModel _getFinishModel() {
     return RepsExerciseModel(
         currentStep: _repository.getExercises().length - 1,
@@ -107,6 +114,7 @@ class GoPageBloc extends Bloc<ExerciseEvent, ExerciseModel> {
         hint: "Congratulations! Exercises completed!");
   }
 
+  /// Returns the next model of exercise from the list
   ExerciseModel _getModel(final int count) {
     Exercise e = _repository.getExercisesWithRests()[count];
     if (e.reps != null) {
@@ -128,4 +136,5 @@ class GoPageBloc extends Bloc<ExerciseEvent, ExerciseModel> {
   }
 }
 
+/// These are the events accepted by this bloc
 enum ExerciseEvent { finish, next, update, init, pause, cont }

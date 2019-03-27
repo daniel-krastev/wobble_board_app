@@ -3,6 +3,13 @@ import 'dart:async';
 import 'package:wobble_board/utils/ble_utils.dart';
 import 'package:wobble_board/utils/wobbly_data.dart';
 
+
+/// This bloc deals with the transport of data
+/// between the app and the board.
+///
+/// The sits bloc is between the UI and the BLE utils,
+/// but unlike the connection bloc, this bloc
+/// requires that you first connect and then use it.
 class DataBlock {
   //BLE helper class
   BleConnectionUtils _bleUtils = BleConnectionUtils.instance;
@@ -50,6 +57,7 @@ class DataBlock {
     }
   }
 
+  /// Stops the notifications of the BLE
   void _stopNotifications() {
     _bleUtils.stopNotifications().then((r) {
       _wobblyDataSubscription?.cancel();
@@ -64,6 +72,7 @@ class DataBlock {
   }
 }
 
+/// The events accepted from this bloc
 abstract class DataEvent {}
 
 class StartDataEvent extends DataEvent {}

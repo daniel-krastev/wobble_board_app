@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:wobble_board/bloc/bloc_provider.dart';
 import 'package:wobble_board/bloc/connection.dart' as bloc;
 
+
+/// User interface for the Settings page.
 class Settings extends StatefulWidget {
   @override
   _SettingsState createState() => _SettingsState();

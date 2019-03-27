@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+/// This class is the UI widget of the selector
+/// of the exercises in the application
 class CustomSelector extends StatefulWidget {
   final String value;
   final Function callback;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// User interface for the About page.
 class About extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wobble_board/bloc/bloc_provider.dart';
 
+/// Here is the user interface for the main page.
 class Home extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();
@@ -12,6 +13,7 @@ class _HomeState extends State<Home> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   int _tappedPage = -1;
 
+  /// Get the drawer for the app.
   Drawer _getDrawer() {
     return Drawer(
       child: ListView(

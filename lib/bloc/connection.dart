@@ -2,8 +2,9 @@ import 'dart:async';
 
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:wobble_board/utils/ble_utils.dart';
-import 'package:wobble_board/utils/wobbly_data.dart';
 
+/// This is the connection bloc.
+/// It is a link between the connection UI and the BLE utilities.
 class ConnectionBlock {
   //BLE helper class
   BleConnectionUtils _bleUtils = BleConnectionUtils.instance;
@@ -45,6 +46,7 @@ class ConnectionBlock {
     }
   }
 
+  /// Gets the current status as a combination from the enum class
   void _getStatus() {
     if (_bluetoothLastKnownState != BluetoothState.on) {
       _inConnState.add(ConnectionState.BLE_OFF);
@@ -55,13 +57,14 @@ class ConnectionBlock {
     }
   }
 
+  /// Connects to the board if it is possible
   void _connect() {
-    _bleUtils.discoverWobbly().then((res) async {
+    _bleUtils.discoverTheBoard().then((res) async {
       if (res) {
         _wobblyConnectionSubscription =
-            _bleUtils.connectToWobbly().listen((state) {
+            _bleUtils.connectToTheBoard().listen((state) {
           if (state == BluetoothDeviceState.connected) {
-            _bleUtils.discoverWobblyChar().then((res) {
+            _bleUtils.discoverBoardsChar().then((res) {
               if (res) {
                 _inConnState.add(ConnectionState.CONNECTED);
               }
@@ -79,6 +82,7 @@ class ConnectionBlock {
     });
   }
 
+  /// Get the bluetooth state and update the "combination" state
   void _handleBluetoothState(BluetoothState s) {
     _bluetoothLastKnownState = s;
     if (s == BluetoothState.off) {
@@ -88,6 +92,7 @@ class ConnectionBlock {
     _getStatus();
   }
 
+  /// Disconnects from the board
   void _disconnect() {
     _wobblyConnectionSubscription?.cancel();
     _inConnState.add(ConnectionState.DISCONNECTED);
@@ -101,6 +106,7 @@ class ConnectionBlock {
   }
 }
 
+/// The events accepted from this bloc
 abstract class ConnectionEvent {}
 
 class ConnectEvent extends ConnectionEvent {}
@@ -109,6 +115,9 @@ class DisconnectEvent extends ConnectionEvent {}
 
 class GetStatusEvent extends ConnectionEvent {}
 
+/// This class combine the Bluetooth state and
+/// the connection state in regards to the board and
+/// summarizes with a new set of states
 class ConnectionState {
   static const BLE_OFF = "Turn your bluetooth on";
   static const CONNECTED = "Connected";

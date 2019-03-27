@@ -3,6 +3,9 @@ import 'package:wobble_board/resources/repository.dart';
 
 final _repository = Repository();
 
+/// This generic model is generated from the exercise info
+/// and is directly passed to the user interface of the
+/// Exercise page through the go page bloc.
 class ExerciseModel {
   String image;
   int currentStep;
@@ -19,6 +22,7 @@ class ExerciseModel {
   bool operator ==(other) => false;
 }
 
+/// Model used at the beginning.
 class InitialExerciseModel extends TimerExerciseModel {
   InitialExerciseModel({
     @required currentSeconds,
@@ -39,6 +43,8 @@ class InitialExerciseModel extends TimerExerciseModel {
   double get progress => 0;
 }
 
+/// Exercise model that contains a number for the
+/// repetitions.
 class RepsExerciseModel extends ExerciseModel {
   int reps;
   RepsExerciseModel(
@@ -46,6 +52,7 @@ class RepsExerciseModel extends ExerciseModel {
       : super(image: image, currentStep: currentStep, hint: hint);
 }
 
+/// Exercise model that contains a timer.
 class TimerExerciseModel extends ExerciseModel {
   int totalSeconds;
   int currentSeconds;

@@ -2,6 +2,7 @@ import 'package:wobble_board/bloc/connection.dart';
 import 'package:wobble_board/bloc/data.dart';
 import 'package:wobble_board/bloc/go_page_bloc.dart';
 
+/// This class stores multiple blocs in class fields
 class AppBloc {
   ConnectionBlock _connection;
   DataBlock _data;

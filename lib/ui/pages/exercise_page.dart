@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wobble_board/resources/repository.dart';
 
+/// User interface for the Exercise page.
 class ExercisePage extends StatelessWidget {
   final _repository = Repository();
 

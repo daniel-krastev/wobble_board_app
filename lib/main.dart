@@ -12,6 +12,8 @@ import 'package:wobble_board/ui/pages/home_page.dart';
 import 'package:wobble_board/ui/pages/settings_page.dart';
 import 'package:wobble_board/ui/widgets/custom_page_route_builder.dart';
 
+
+//It is where the application starts!
 main() {
   Screen.keepOn(true);
   final appBloc = AppBloc();
@@ -90,6 +92,7 @@ main() {
   });
 }
 
+// The colors used in the application
 const Color _backgroundColor = Color.fromARGB(255, 245, 245, 245);
 const Color _darkTextColor = Color.fromARGB(255, 99, 101, 105);
 const Color _lightTextColor = Color.fromARGB(255, 153, 157, 160);
