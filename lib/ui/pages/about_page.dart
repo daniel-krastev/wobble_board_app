@@ -16,10 +16,12 @@ class About extends StatelessWidget {
                 height: MediaQuery.of(context).size.height * 0.125,
                 child: Text(
                   "About",
+                  key: Key("page_title"),
                   style: Theme.of(context).primaryTextTheme.title,
                 ),
               ),
               IconButton(
+                  key: Key("back_arrow"),
                   alignment: Alignment.centerLeft,
                   iconSize: Theme.of(context).iconTheme.size,
                   padding: EdgeInsets.all(18.0),

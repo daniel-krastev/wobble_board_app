@@ -26,6 +26,7 @@ class _HomeState extends State<Home> {
                   ),
           ),
           ListTile(
+              key: Key("settings_drawer"),
               title: Text('Settings',
                   style: Theme.of(context).primaryTextTheme.caption),
               onTap: () {
@@ -34,6 +35,7 @@ class _HomeState extends State<Home> {
               trailing: Icon(Icons.settings)),
           ListTile(
             title: Text('About',
+                key: Key("about_drawer"),
                 style: Theme.of(context).primaryTextTheme.caption),
             onTap: () {
               Navigator.popAndPushNamed(context, '/about');
@@ -59,6 +61,7 @@ class _HomeState extends State<Home> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   IconButton(
+                      key: Key("menu_icon"),
                       alignment: Alignment.centerLeft,
                       iconSize: Theme.of(context).iconTheme.size,
                       padding: EdgeInsets.all(18.0),
@@ -101,6 +104,7 @@ class _HomeState extends State<Home> {
                             child: Material(
                               color: Colors.transparent,
                               child: InkWell(
+                                key: Key("${RepoOptions.menuOpt[count].title.toLowerCase()}_option"),
                                 onTap: () {
                                   Navigator.pushNamed(
                                       context, RepoOptions.menuOpt[count].path);

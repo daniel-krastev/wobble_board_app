@@ -6,7 +6,7 @@ final _repository = Repository();
 /// This generic model is generated from the exercise info
 /// and is directly passed to the user interface of the
 /// Exercise page through the go page bloc.
-class ExerciseModel {
+abstract class ExerciseModel {
   String image;
   int currentStep;
   String hint;

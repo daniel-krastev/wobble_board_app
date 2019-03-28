@@ -31,6 +31,7 @@ class _GameState extends State<GamePage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   IconButton(
+                      key: Key("back_arrow"),
                       alignment: Alignment.centerLeft,
                       iconSize: Theme.of(context).iconTheme.size,
                       padding: EdgeInsets.all(18.0),
@@ -40,6 +41,7 @@ class _GameState extends State<GamePage> {
                       child: Padding(
                     padding: const EdgeInsets.all(0),
                     child: Text('Game',
+                        key: Key("page_title"),
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 30,

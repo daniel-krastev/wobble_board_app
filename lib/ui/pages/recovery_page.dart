@@ -17,6 +17,7 @@ class RecoveryPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   IconButton(
+                      key: Key("back_arrow"),
                       alignment: Alignment.centerLeft,
                       iconSize: Theme.of(context).iconTheme.size,
                       padding: EdgeInsets.all(18.0),
@@ -26,6 +27,7 @@ class RecoveryPage extends StatelessWidget {
                       child: Padding(
                     padding: const EdgeInsets.all(0),
                     child: Text('Recovery',
+                        key: Key("page_title"),
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 30,

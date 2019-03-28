@@ -29,9 +29,11 @@ class _SettingsState extends State<Settings> {
                 child: Text(
                   "Settings",
                   style: Theme.of(context).primaryTextTheme.title,
+                  key: Key("page_title"),
                 ),
               ),
               IconButton(
+                  key: Key("back_arrow"),
                   alignment: Alignment.centerLeft,
                   iconSize: Theme.of(context).iconTheme.size,
                   padding: EdgeInsets.all(18.0),
@@ -118,8 +120,6 @@ class _SettingsState extends State<Settings> {
   void didChangeDependencies() {
     bl = BlocProvider.of(context).connectionBloc;
     bl.connectionEventSink.add(bloc.GetStatusEvent());
-//    _screenWidth = MediaQuery.of(context).size.width;
-//    _screenHeight = MediaQuery.of(context).size.height;
     super.didChangeDependencies();
   }
 
@@ -127,6 +127,7 @@ class _SettingsState extends State<Settings> {
     return Text(
       "Status:  $status",
       style: Theme.of(context).primaryTextTheme.body1,
+      key: Key("status_text"),
     );
   }
 

@@ -49,48 +49,51 @@ main() {
               }
             },
             debugShowCheckedModeBanner: false,
-            theme: ThemeData(
-                buttonTheme: ButtonThemeData(buttonColor: _primaryColor),
-                backgroundColor: _backgroundColor,
-                primaryColor: _primaryColor,
-                primaryColorLight: _lightTextColor,
-                primaryColorDark: _darkTextColor,
-                iconTheme: IconThemeData(color: _lightTextColor, size: 35.0),
-                fontFamily: "Nunito",
-                primaryTextTheme: TextTheme(
-                    title: TextStyle(
-                      color: _primaryColor,
-                      fontSize: 25.0,
-                    ),
-                    body1: TextStyle(
-                        color: _lightTextColor,
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.w700),
-                    body2: TextStyle(
-                        color: _darkTextColor,
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.w300),
-                    button: TextStyle(
-                        color: _buttonTextColor,
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.w500),
-                    caption: TextStyle(
-                        color: _primaryColor,
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.w500),
-                    subtitle: TextStyle(
-                        color: _captionTextColor,
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.w500),
-                    overline: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.w500))),
+            theme: themeData,
             title: "RehApp",
             )
     ));
   });
 }
+
+//Theme data for the application
+ThemeData themeData = ThemeData(
+    buttonTheme: ButtonThemeData(buttonColor: _primaryColor),
+    backgroundColor: _backgroundColor,
+    primaryColor: _primaryColor,
+    primaryColorLight: _lightTextColor,
+    primaryColorDark: _darkTextColor,
+    iconTheme: IconThemeData(color: _lightTextColor, size: 35.0),
+    fontFamily: "Nunito",
+    primaryTextTheme: TextTheme(
+        title: TextStyle(
+          color: _primaryColor,
+          fontSize: 25.0,
+        ),
+        body1: TextStyle(
+            color: _lightTextColor,
+            fontSize: 18.0,
+            fontWeight: FontWeight.w700),
+        body2: TextStyle(
+            color: _darkTextColor,
+            fontSize: 18.0,
+            fontWeight: FontWeight.w300),
+        button: TextStyle(
+            color: _buttonTextColor,
+            fontSize: 18.0,
+            fontWeight: FontWeight.w500),
+        caption: TextStyle(
+            color: _primaryColor,
+            fontSize: 18.0,
+            fontWeight: FontWeight.w500),
+        subtitle: TextStyle(
+            color: _captionTextColor,
+            fontSize: 18.0,
+            fontWeight: FontWeight.w500),
+        overline: TextStyle(
+            color: Colors.white,
+            fontSize: 18.0,
+            fontWeight: FontWeight.w500)));
 
 // The colors used in the application
 const Color _backgroundColor = Color.fromARGB(255, 245, 245, 245);
